@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="vi" oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;" oncopy="return false;" oncut="return false;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web học Trọn bộ Hiragana của VANNGANKDB</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  
+  <!-- Google Fonts: Inter & Noto Sans JP -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            jp: ['"Noto Sans JP"', 'sans-serif'],
+          },
+          animation: {
+            'shake': 'shake 0.35s cubic-bezier(.36,.07,.19,.97) both',
+            'pop': 'pop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) both',
+          },
+          keyframes: {
+            shake: {
+              '10%, 90%': { transform: 'translateX(-4px)' },
+              '20%, 80%': { transform: 'translateX(6px)' },
+              '30%, 50%, 70%': { transform: 'translateX(-6px)' },
+              '40%, 60%': { transform: 'translateX(6px)' },
+            },
+            pop: {
+              '0%': { transform: 'scale(0.92)', opacity: '0.2' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after {
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+      -webkit-user-drag: none !important;
+    }
+
+    input[type="text"] {
+      -webkit-user-select: auto !important;
+      user-select: auto !important;
+    }
+
+    .hiragana-glyph {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 900;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    #theme-backdrop {
+      transition: background 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-panel {
+      background: rgba(11, 15, 25, 0.86);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.85);
+    }
+
+    .glass-card-subtle {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .interactive-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: all 0.16s ease-out;
+    }
+    .interactive-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.28);
+      transform: translateY(-2px);
+    }
+    .interactive-btn:active {
+      transform: translateY(1px);
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+  </style>
+
+  <!-- LỚP BẢO VỆ CHỐNG SOI CODE TOÀN DIỆN (VANNGANKDB) -->
+  <script>
+    (function initSecurity() {
+      const noop = () => {};
+      ['log', 'debug', 'info', 'warn', 'error', 'table', 'trace', 'dir', 'clear'].forEach(fn => {
+        try { window.console[fn] = noop; } catch (e) {}
+      });
+
+      try {
+        if (window.top !== window.self) {
+          window.top.location = window.self.location;
+        }
+      } catch (err) {}
+
+      function triggerAlert() {
+        document.body.innerHTML = `
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#09090b;color:#f43f5e;font-family:sans-serif;text-align:center;padding:24px;">
+            <div style="font-size:52px;margin-bottom:16px;">🛡️</div>
+            <h1 style="font-size:24px;font-weight:900;margin-bottom:12px;">CẢNH BÁO BẢO MẬT MÃ NGUỒN</h1>
+            <p style="font-size:15px;color:#a1a1aa;max-width:540px;line-height:1.7;">
+              Hành vi cố tình trích xuất hoặc can thiệp mã nguồn đã bị chặn để bảo vệ bản quyền của <strong>VANNGANKDB</strong>.<br><br>
+              Vui lòng đóng các công cụ lập trình và nhấn <strong>F5</strong> để tải lại trang.
+            </p>
+          </div>
+        `;
+        try { window.stop(); } catch (e) {}
+      }
+
+      function checkWindowResize() {
+        const threshold = 160;
+        if ((window.outerWidth - window.innerWidth > threshold) || (window.outerHeight - window.innerHeight > threshold)) {
+          triggerAlert();
+        }
+      }
+      window.addEventListener('resize', checkWindowResize);
+
+      setInterval(function () {
+        const start = performance.now();
+        (function () { return true; }["constructor"]("debugger")());
+        if (performance.now() - start > 80) triggerAlert();
+      }, 700);
+
+      document.addEventListener('contextmenu', e => e.preventDefault(), { capture: true });
+      document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT') e.preventDefault(); }, { capture: true });
+      document.addEventListener('dragstart', e => e.preventDefault(), { capture: true });
+      document.addEventListener('drop', e => e.preventDefault(), { capture: true });
+
+      document.addEventListener('copy', e => {
+        if (e.target.tagName !== 'INPUT') {
+          e.preventDefault();
+          if (e.clipboardData) e.clipboardData.setData('text/plain', 'Nghiêm cấm sao chép mã nguồn của VANNGANKDB!');
+        }
+      }, { capture: true });
+
+      document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT') e.preventDefault(); }, { capture: true });
+
+      window.addEventListener('keydown', e => {
+        const isCtrlOrCmd = e.ctrlKey || e.metaKey;
+        const key = e.key ? e.key.toUpperCase() : '';
+        const code = e.keyCode || e.which;
+
+        if (code === 123 || e.key === 'F12') { e.preventDefault(); e.stopPropagation(); return false; }
+        if (isCtrlOrCmd && e.shiftKey && ['I', 'J', 'C', 'K', 'E', 'S'].includes(key)) { e.preventDefault(); e.stopPropagation(); return false; }
+        if (isCtrlOrCmd && (key === 'U' || key === 'S' || key === 'P')) { e.preventDefault(); e.stopPropagation(); return false; }
+        if (isCtrlOrCmd && (key === 'A' || key === 'C') && e.target.tagName !== 'INPUT') { e.preventDefault(); e.stopPropagation(); return false; }
+      }, { capture: true });
+    })();
+  </script>
+</head>
+
+<body class="relative min-h-screen text-slate-100 font-sans selection:bg-transparent selection:text-inherit flex flex-col justify-between overflow-x-hidden">
+
+  <!-- Dynamic Theme Background Layer -->
+  <div id="theme-backdrop" class="fixed inset-0 pointer-events-none z-0"></div>
+
+  <!-- Dynamic Animated Canvas Layer (10 Hiệu Ứng Luân Phiên 10s) -->
+  <canvas id="ambient-canvas" class="fixed inset-0 pointer-events-none z-0 w-full h-full"></canvas>
+
+  <!-- Ambient Vignette -->
+  <div class="fixed inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/85 pointer-events-none z-0"></div>
+
+  <!-- Main Container -->
+  <div class="relative z-10 w-full max-w-4xl mx-auto px-4 py-5 sm:px-6 sm:py-7 flex flex-col min-h-screen justify-between">
+
+    <!-- Header Section -->
+    <header class="w-full flex flex-col gap-3.5 pb-3 border-b border-white/10">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div>
+          <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-white flex items-center gap-2">
+            <span>Web học Trọn bộ Hiragana của VANNGANKDB</span>
+          </h1>
+        </div>
+
+        <!-- Mode Toggle: Luyện tập vs Kiểm tra -->
+        <div class="bg-black/50 p-1 rounded-2xl border border-white/15 flex items-center shadow-inner w-full sm:w-auto">
+          <button id="btn-mode-practice" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-white/15 text-white shadow-sm border border-white/15">
+            <i class="fa-solid fa-graduation-cap text-cyan-400"></i>
+            <span>Luyện tập</span>
+          </button>
+          <button id="btn-mode-exam" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white">
+            <i class="fa-solid fa-file-signature text-pink-400"></i>
+            <span id="exam-mode-title">Kiểm tra 104 câu</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Format Switcher & Reset -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="bg-black/40 p-1 rounded-xl border border-white/10 flex items-center gap-1">
+          <button id="btn-format-choice" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow-sm">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Trắc nghiệm (4 đáp án)</span>
+          </button>
+          <button id="btn-format-typing" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-slate-400 hover:text-white">
+            <i class="fa-solid fa-keyboard"></i>
+            <span>Tự luận (Gõ Romaji)</span>
+          </button>
+        </div>
+
+        <button id="btn-restart" class="interactive-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5">
+          <i class="fa-solid fa-rotate-right text-xs"></i>
+          <span>Làm lại</span>
+        </button>
+      </div>
+
+      <!-- BỘ CHỌN HÀNG 1-26: CHỈ HIỆN Ở TỰ LUẬN & CHỈ CÓ SỐ HÀNG ĐỂ CHỐNG LỘ ĐỀ -->
+      <div id="row-filter-panel" class="hidden glass-card-subtle rounded-2xl p-3 border border-indigo-500/25 flex flex-col gap-2.5 transition-all">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="text-xs font-bold text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-indigo-400"></i>
+            <span>Tùy chọn hàng kiểm tra (Hàng 1 - 26):</span>
+            <span id="selected-count-badge" class="px-2 py-0.5 rounded-full text-[10px] bg-indigo-500/30 text-indigo-300 font-mono font-bold">104 câu</span>
+          </div>
+
+          <!-- Nhóm phím chọn nhanh phân loại -->
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button id="btn-quick-basic" class="text-[11px] px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300 font-semibold transition-all">
+              1-10 (46 chữ)
+            </button>
+            <button id="btn-quick-dakuon" class="text-[11px] px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300 font-semibold transition-all">
+              11-15 (25 chữ)
+            </button>
+            <button id="btn-quick-yoon" class="text-[11px] px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300 font-semibold transition-all">
+              16-26 (33 chữ)
+            </button>
+            <button id="btn-toggle-all-rows" class="text-[11px] px-2.5 py-1 rounded-lg bg-indigo-600/50 hover:bg-indigo-600 text-indigo-200 font-bold transition-all border border-indigo-400/40 flex items-center gap-1">
+              <i class="fa-solid fa-check-double text-[10px]"></i>
+              <span id="btn-toggle-all-text">Chọn tất cả</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 26 Hàng thuần túy: Hàng 1 -> Hàng 26 không hiển thị chữ gợi ý -->
+        <div id="row-filter-container" class="grid grid-cols-4 sm:grid-cols-7 md:grid-cols-9 lg:grid-cols-13 gap-1.5"></div>
+      </div>
+    </header>
+
+    <!-- Two Independent Record Cards (Trắc nghiệm & Tự luận cho 104 câu) -->
+    <section class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <!-- Choice Record Card -->
+      <div class="glass-card-subtle rounded-2xl p-3 border border-amber-500/25 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 text-base">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <div>
+            <div class="text-[11px] uppercase tracking-wider text-amber-300 font-bold flex items-center gap-1.5">
+              <span>Kỷ lục Trắc nghiệm</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-200">104 câu</span>
+            </div>
+            <div class="text-sm font-black text-white mt-0.5">
+              Đúng: <span id="record-choice-correct" class="text-amber-400">0</span>/104 (<span id="record-choice-pct">0%</span>)
+              <span class="text-xs text-slate-400 font-normal ml-1.5">• 🔥 Chuỗi: <strong id="record-choice-streak" class="text-amber-300 font-bold">0</strong></span>
+            </div>
+          </div>
+        </div>
+        <span class="text-[10px] text-slate-400 font-medium hidden sm:inline">Trắc nghiệm</span>
+      </div>
+
+      <!-- Typing Record Card -->
+      <div class="glass-card-subtle rounded-2xl p-3 border border-cyan-500/25 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-base">
+            <i class="fa-solid fa-pen-nib"></i>
+          </div>
+          <div>
+            <div class="text-[11px] uppercase tracking-wider text-cyan-300 font-bold flex items-center gap-1.5">
+              <span>Kỷ lục Tự luận</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-200">104 câu</span>
+            </div>
+            <div class="text-sm font-black text-white mt-0.5">
+              Đúng: <span id="record-typing-correct" class="text-cyan-400">0</span>/104 (<span id="record-typing-pct">0%</span>)
+              <span class="text-xs text-slate-400 font-normal ml-1.5">• 🔥 Chuỗi: <strong id="record-typing-streak" class="text-cyan-300 font-bold">0</strong></span>
+            </div>
+          </div>
+        </div>
+        <span class="text-[10px] text-slate-400 font-medium hidden sm:inline">Tự luận</span>
+      </div>
+    </section>
+
+    <!-- Exam Dashboard (Chỉ hiện khi kiểm tra) -->
+    <section id="exam-stats-bar" class="hidden mt-3">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div class="glass-card-subtle rounded-2xl p-3 flex items-center gap-3 border border-indigo-500/20">
+          <div class="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-base">
+            <i class="fa-solid fa-list-ol"></i>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Tiến trình</div>
+            <div class="text-lg font-black text-white"><span id="exam-question-index">1</span>/<span id="exam-total-questions">104</span></div>
+          </div>
+        </div>
+
+        <div class="glass-card-subtle rounded-2xl p-3 flex items-center gap-3 border border-emerald-500/20">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-base">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Số câu đúng</div>
+            <div class="text-lg font-black text-emerald-300"><span id="exam-correct-count">0</span>/<span id="exam-total-questions-2">104</span></div>
+          </div>
+        </div>
+
+        <div class="glass-card-subtle rounded-2xl p-3 flex items-center gap-3 border border-amber-500/20">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 text-base">
+            <i class="fa-solid fa-fire"></i>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Chuỗi đúng</div>
+            <div class="text-lg font-black text-amber-300"><span id="exam-streak-count">0</span> câu</div>
+          </div>
+        </div>
+
+        <div class="glass-card-subtle rounded-2xl p-3 flex items-center gap-3 border border-cyan-500/20">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-base">
+            <i class="fa-solid fa-chart-pie"></i>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Tỉ lệ đúng</div>
+            <div class="text-lg font-black text-cyan-300" id="exam-accuracy-pct">0%</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Interaction Area -->
+    <main class="flex-1 flex flex-col items-center justify-center py-4 sm:py-6">
+      <div id="main-interactive-card" class="w-full max-w-lg glass-panel rounded-3xl p-6 sm:p-8 flex flex-col items-center relative transition-all duration-300">
+        
+        <!-- Large Sharp Hiragana Card (Noto Sans JP 900) -->
+        <div class="w-full flex flex-col items-center justify-center mb-5">
+          <div class="relative w-56 h-48 sm:w-64 sm:h-56 rounded-3xl bg-slate-950/95 border-2 border-slate-700/80 shadow-2xl flex items-center justify-center transition-all group px-4">
+            
+            <div id="hiragana-display" class="hiragana-glyph text-white text-7xl sm:text-8xl select-none text-center">
+              あ
+            </div>
+
+            <!-- Corner Accents -->
+            <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-white/20 rounded-tl"></div>
+            <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-white/20 rounded-tr"></div>
+            <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-white/20 rounded-bl"></div>
+            <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-white/20 rounded-br"></div>
+          </div>
+
+          <p id="prompt-label" class="text-xs sm:text-sm text-slate-300 font-medium mt-3.5 text-center">
+            Chọn Romaji tương ứng cho ký tự trên (Phím 1-4):
+          </p>
+        </div>
+
+        <!-- Choice Mode -->
+        <div id="section-choice" class="w-full grid grid-cols-2 gap-3 sm:gap-4">
+          <button data-choice-index="0" class="choice-btn group interactive-btn p-4 rounded-2xl flex items-center justify-between font-bold text-lg sm:text-xl text-slate-100 hover:border-pink-400">
+            <span class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-lg bg-white/10 group-hover:bg-pink-500/30 text-xs font-mono font-bold text-slate-300 group-hover:text-pink-200 flex items-center justify-center border border-white/10">1</span>
+              <span class="choice-text">a</span>
+            </span>
+            <i class="fa-solid fa-check text-xs opacity-0 group-hover:opacity-100 text-pink-400 transition-opacity"></i>
+          </button>
+
+          <button data-choice-index="1" class="choice-btn group interactive-btn p-4 rounded-2xl flex items-center justify-between font-bold text-lg sm:text-xl text-slate-100 hover:border-pink-400">
+            <span class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-lg bg-white/10 group-hover:bg-pink-500/30 text-xs font-mono font-bold text-slate-300 group-hover:text-pink-200 flex items-center justify-center border border-white/10">2</span>
+              <span class="choice-text">i</span>
+            </span>
+            <i class="fa-solid fa-check text-xs opacity-0 group-hover:opacity-100 text-pink-400 transition-opacity"></i>
+          </button>
+
+          <button data-choice-index="2" class="choice-btn group interactive-btn p-4 rounded-2xl flex items-center justify-between font-bold text-lg sm:text-xl text-slate-100 hover:border-pink-400">
+            <span class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-lg bg-white/10 group-hover:bg-pink-500/30 text-xs font-mono font-bold text-slate-300 group-hover:text-pink-200 flex items-center justify-center border border-white/10">3</span>
+              <span class="choice-text">u</span>
+            </span>
+            <i class="fa-solid fa-check text-xs opacity-0 group-hover:opacity-100 text-pink-400 transition-opacity"></i>
+          </button>
+
+          <button data-choice-index="3" class="choice-btn group interactive-btn p-4 rounded-2xl flex items-center justify-between font-bold text-lg sm:text-xl text-slate-100 hover:border-pink-400">
+            <span class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-lg bg-white/10 group-hover:bg-pink-500/30 text-xs font-mono font-bold text-slate-300 group-hover:text-pink-200 flex items-center justify-center border border-white/10">4</span>
+              <span class="choice-text">e</span>
+            </span>
+            <i class="fa-solid fa-check text-xs opacity-0 group-hover:opacity-100 text-pink-400 transition-opacity"></i>
+          </button>
+        </div>
+
+        <!-- Typing Mode -->
+        <div id="section-typing" class="w-full hidden">
+          <form id="typing-form" class="w-full" onsubmit="return false;">
+            <div class="relative flex items-center">
+              <input 
+                type="text" 
+                id="typing-input" 
+                maxlength="6" 
+                autocomplete="off" 
+                autocorrect="off" 
+                spellcheck="false" 
+                placeholder="Nhập Romaji..." 
+                class="w-full bg-slate-950/90 border-2 border-slate-700 focus:border-pink-500 rounded-2xl px-5 py-4 text-center font-bold text-2xl text-white placeholder-slate-500 outline-none transition-all shadow-inner focus:shadow-pink-500/20"
+              />
+              <button 
+                type="submit" 
+                id="btn-typing-submit" 
+                class="absolute right-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-semibold text-xs sm:text-sm hover:opacity-95 active:scale-95 transition-all shadow-md flex items-center gap-1.5"
+              >
+                <span>Nộp</span>
+                <i class="fa-solid fa-arrow-turn-down fa-rotate-90 text-xs"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Feedback & Review Banner -->
+        <div id="feedback-container" class="w-full mt-4 p-3.5 rounded-2xl hidden items-center justify-between text-xs sm:text-sm font-semibold transition-all">
+          <div id="feedback-message" class="flex items-center gap-2.5"></div>
+          <button id="btn-next-action" class="px-3.5 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold transition-all flex items-center gap-1">
+            <span>Tiếp tục</span>
+            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+
+      </div>
+    </main>
+
+    <div></div>
+  </div>
+
+  <!-- Exam Result Modal -->
+  <div id="modal-result" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-2xl rounded-3xl p-6 sm:p-8 flex flex-col max-h-[90vh] border border-white/20 shadow-2xl animate-pop">
+      
+      <div class="text-center pb-4 border-b border-white/10">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-600 text-white text-2xl shadow-lg shadow-purple-500/30 mb-2">
+          <i class="fa-solid fa-award"></i>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-black text-white">Kết Quả Kiểm Tra Hiragana</h2>
+        <p id="modal-sub-title" class="text-xs text-slate-400 mt-1">Đánh giá các hàng đã chọn</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 my-4">
+        <div class="glass-card-subtle rounded-2xl p-3.5 text-center">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Số câu đúng</div>
+          <div class="text-2xl sm:text-3xl font-black text-emerald-400 mt-0.5">
+            <span id="modal-correct-count">0</span><span class="text-xs font-semibold text-slate-400">/<span id="modal-total-count">104</span></span>
+          </div>
+        </div>
+
+        <div class="glass-card-subtle rounded-2xl p-3.5 text-center">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Chuỗi cao nhất</div>
+          <div class="text-2xl sm:text-3xl font-black text-amber-300 mt-0.5">
+            🔥 <span id="modal-max-streak">0</span>
+          </div>
+        </div>
+
+        <div class="glass-card-subtle rounded-2xl p-3.5 text-center">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Tỉ lệ đúng</div>
+          <div id="modal-accuracy" class="text-2xl sm:text-3xl font-black text-cyan-300 mt-0.5">
+            0%
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-y-auto pr-1 my-2 custom-scroll max-h-60">
+        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+          Chi tiết bài kiểm tra
+        </div>
+        <div id="modal-review-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+      </div>
+
+      <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center gap-3">
+        <button id="btn-modal-retry-exam" class="w-full sm:flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-600 hover:opacity-95 text-white font-bold text-sm shadow-lg shadow-pink-500/25 transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>Làm bài mới</span>
+        </button>
+        <button id="btn-modal-go-practice" class="w-full sm:flex-1 py-3 px-4 rounded-xl interactive-btn text-white font-semibold text-sm transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-graduation-cap text-cyan-400"></i>
+          <span>Về Luyện tập</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /*
+      TRỌN BỘ 104 KÝ TỰ HIRAGANA QUA 26 HÀNG:
+      - 46 Chữ cơ bản (Hàng 1 -> 10)
+      - 25 Chữ biến âm (Hàng 11 -> 15)
+      - 33 Chữ âm ghép (Hàng 16 -> 26)
+    */
+    const HIRAGANA_FULL_DATA = [
+      // HÀNG 1 -> 10: 46 CHỮ CƠ BẢN
+      { id: 1,  row: 1,  char: 'あ', romaji: 'a',   accepted: ['a'] },
+      { id: 2,  row: 1,  char: 'い', romaji: 'i',   accepted: ['i'] },
+      { id: 3,  row: 1,  char: 'う', romaji: 'u',   accepted: ['u'] },
+      { id: 4,  row: 1,  char: 'え', romaji: 'e',   accepted: ['e'] },
+      { id: 5,  row: 1,  char: 'お', romaji: 'o',   accepted: ['o'] },
+
+      { id: 6,  row: 2,  char: 'か', romaji: 'ka',  accepted: ['ka'] },
+      { id: 7,  row: 2,  char: 'き', romaji: 'ki',  accepted: ['ki'] },
+      { id: 8,  row: 2,  char: 'く', romaji: 'ku',  accepted: ['ku'] },
+      { id: 9,  row: 2,  char: 'け', romaji: 'ke',  accepted: ['ke'] },
+      { id: 10, row: 2,  char: 'こ', romaji: 'ko',  accepted: ['ko'] },
+
+      { id: 11, row: 3,  char: 'さ', romaji: 'sa',  accepted: ['sa'] },
+      { id: 12, row: 3,  char: 'し', romaji: 'shi', accepted: ['shi', 'si'] },
+      { id: 13, row: 3,  char: 'す', romaji: 'su',  accepted: ['su'] },
+      { id: 14, row: 3,  char: 'せ', romaji: 'se',  accepted: ['se'] },
+      { id: 15, row: 3,  char: 'そ', romaji: 'so',  accepted: ['so'] },
+
+      { id: 16, row: 4,  char: 'た', romaji: 'ta',  accepted: ['ta'] },
+      { id: 17, row: 4,  char: 'ち', romaji: 'chi', accepted: ['chi', 'ti'] },
+      { id: 18, row: 4,  char: 'つ', romaji: 'tsu', accepted: ['tsu', 'tu'] },
+      { id: 19, row: 4,  char: 'て', romaji: 'te',  accepted: ['te'] },
+      { id: 20, row: 4,  char: 'と', romaji: 'to',  accepted: ['to'] },
+
+      { id: 21, row: 5,  char: 'な', romaji: 'na',  accepted: ['na'] },
+      { id: 22, row: 5,  char: 'に', romaji: 'ni',  accepted: ['ni'] },
+      { id: 23, row: 5,  char: 'ぬ', romaji: 'nu',  accepted: ['nu'] },
+      { id: 24, row: 5,  char: 'ね', romaji: 'ne',  accepted: ['ne'] },
+      { id: 25, row: 5,  char: 'の', romaji: 'no',  accepted: ['no'] },
+
+      { id: 26, row: 6,  char: 'は', romaji: 'ha',  accepted: ['ha'] },
+      { id: 27, row: 6,  char: 'ひ', romaji: 'hi',  accepted: ['hi'] },
+      { id: 28, row: 6,  char: 'ふ', romaji: 'fu',  accepted: ['fu', 'hu'] },
+      { id: 29, row: 6,  char: 'へ', romaji: 'he',  accepted: ['he'] },
+      { id: 30, row: 6,  char: 'ほ', romaji: 'ho',  accepted: ['ho'] },
+
+      { id: 31, row: 7,  char: 'ま', romaji: 'ma',  accepted: ['ma'] },
+      { id: 32, row: 7,  char: 'み', romaji: 'mi',  accepted: ['mi'] },
+      { id: 33, row: 7,  char: 'む', romaji: 'mu',  accepted: ['mu'] },
+      { id: 34, row: 7,  char: 'め', romaji: 'me',  accepted: ['me'] },
+      { id: 35, row: 7,  char: 'も', romaji: 'mo',  accepted: ['mo'] },
+
+      { id: 36, row: 8,  char: 'や', romaji: 'ya',  accepted: ['ya'] },
+      { id: 37, row: 8,  char: 'ゆ', romaji: 'yu',  accepted: ['yu'] },
+      { id: 38, row: 8,  char: 'よ', romaji: 'yo',  accepted: ['yo'] },
+
+      { id: 39, row: 9,  char: 'ら', romaji: 'ra',  accepted: ['ra'] },
+      { id: 40, row: 9,  char: 'り', romaji: 'ri',  accepted: ['ri'] },
+      { id: 41, row: 9,  char: 'る', romaji: 'ru',  accepted: ['ru'] },
+      { id: 42, row: 9,  char: 'れ', romaji: 're',  accepted: ['re'] },
+      { id: 43, row: 9,  char: 'ろ', romaji: 'ro',  accepted: ['ro'] },
+
+      { id: 44, row: 10, char: 'わ', romaji: 'wa',  accepted: ['wa'] },
+      { id: 45, row: 10, char: 'を', romaji: 'wo',  accepted: ['wo', 'o'] },
+      { id: 46, row: 10, char: 'ん', romaji: 'n',   accepted: ['n', 'nn'] },
+
+      // HÀNG 11 -> 15: 25 CHỮ BIẾN ÂM (DAKUON & HANDAKUON)
+      { id: 47, row: 11, char: 'が', romaji: 'ga', accepted: ['ga'] },
+      { id: 48, row: 11, char: 'ぎ', romaji: 'gi', accepted: ['gi'] },
+      { id: 49, row: 11, char: 'ぐ', romaji: 'gu', accepted: ['gu'] },
+      { id: 50, row: 11, char: 'げ', romaji: 'ge', accepted: ['ge'] },
+      { id: 51, row: 11, char: 'ご', romaji: 'go', accepted: ['go'] },
+
+      { id: 52, row: 12, char: 'ざ', romaji: 'za', accepted: ['za'] },
+      { id: 53, row: 12, char: 'じ', romaji: 'ji', accepted: ['ji', 'zi'] },
+      { id: 54, row: 12, char: 'ず', romaji: 'zu', accepted: ['zu'] },
+      { id: 55, row: 12, char: 'ぜ', romaji: 'ze', accepted: ['ze'] },
+      { id: 56, row: 12, char: 'ぞ', romaji: 'zo', accepted: ['zo'] },
+
+      { id: 57, row: 13, char: 'だ', romaji: 'da', accepted: ['da'] },
+      { id: 58, row: 13, char: 'ぢ', romaji: 'ji', accepted: ['ji', 'di', 'dji'] },
+      { id: 59, row: 13, char: 'づ', romaji: 'zu', accepted: ['zu', 'du', 'dzu'] },
+      { id: 60, row: 13, char: 'で', romaji: 'de', accepted: ['de'] },
+      { id: 61, row: 13, char: 'ど', romaji: 'do', accepted: ['do'] },
+
+      { id: 62, row: 14, char: 'ば', romaji: 'ba', accepted: ['ba'] },
+      { id: 63, row: 14, char: 'び', romaji: 'bi', accepted: ['bi'] },
+      { id: 64, row: 14, char: 'ぶ', romaji: 'bu', accepted: ['bu'] },
+      { id: 65, row: 14, char: 'べ', romaji: 'be', accepted: ['be'] },
+      { id: 66, row: 14, char: 'ぼ', romaji: 'bo', accepted: ['bo'] },
+
+      { id: 67, row: 15, char: 'ぱ', romaji: 'pa', accepted: ['pa'] },
+      { id: 68, row: 15, char: 'ぴ', romaji: 'pi', accepted: ['pi'] },
+      { id: 69, row: 15, char: 'ぷ', romaji: 'pu', accepted: ['pu'] },
+      { id: 70, row: 15, char: 'ぺ', romaji: 'pe', accepted: ['pe'] },
+      { id: 71, row: 15, char: 'ぽ', romaji: 'po', accepted: ['po'] },
+
+      // HÀNG 16 -> 26: 33 CHỮ ÂM GHÉP (YŌON)
+      { id: 72, row: 16, char: 'きゃ', romaji: 'kya', accepted: ['kya'] },
+      { id: 73, row: 16, char: 'きゅ', romaji: 'kyu', accepted: ['kyu'] },
+      { id: 74, row: 16, char: 'きょ', romaji: 'kyo', accepted: ['kyo'] },
+
+      { id: 75, row: 17, char: 'しゃ', romaji: 'sha', accepted: ['sha', 'sya'] },
+      { id: 76, row: 17, char: 'しゅ', romaji: 'shu', accepted: ['shu', 'syu'] },
+      { id: 77, row: 17, char: 'しょ', romaji: 'sho', accepted: ['sho', 'syo'] },
+
+      { id: 78, row: 18, char: 'ちゃ', romaji: 'cha', accepted: ['cha', 'tya', 'cya'] },
+      { id: 79, row: 18, char: 'ちゅ', romaji: 'chu', accepted: ['chu', 'tyu', 'cyu'] },
+      { id: 80, row: 18, char: 'ちょ', romaji: 'cho', accepted: ['cho', 'tyo', 'cyo'] },
+
+      { id: 81, row: 19, char: 'にゃ', romaji: 'nya', accepted: ['nya'] },
+      { id: 82, row: 19, char: 'にゅ', romaji: 'nyu', accepted: ['nyu'] },
+      { id: 83, row: 19, char: 'にょ', romaji: 'nyo', accepted: ['nyo'] },
+
+      { id: 84, row: 20, char: 'ひゃ', romaji: 'hya', accepted: ['hya'] },
+      { id: 85, row: 20, char: 'ひゅ', romaji: 'hyu', accepted: ['hyu'] },
+      { id: 86, row: 20, char: 'ひょ', romaji: 'hyo', accepted: ['hyo'] },
+
+      { id: 87, row: 21, char: 'みゃ', romaji: 'mya', accepted: ['mya'] },
+      { id: 88, row: 21, char: 'みゅ', romaji: 'myu', accepted: ['myu'] },
+      { id: 89, row: 21, char: 'みょ', romaji: 'myo', accepted: ['myo'] },
+
+      { id: 90, row: 22, char: 'りゃ', romaji: 'rya', accepted: ['rya'] },
+      { id: 91, row: 22, char: 'りゅ', romaji: 'ryu', accepted: ['ryu'] },
+      { id: 92, row: 22, char: 'りょ', romaji: 'ryo', accepted: ['ryo'] },
+
+      { id: 93, row: 23, char: 'ぎゃ', romaji: 'gya', accepted: ['gya'] },
+      { id: 94, row: 23, char: 'ぎゅ', romaji: 'gyu', accepted: ['gyu'] },
+      { id: 95, row: 23, char: 'ぎょ', romaji: 'gyo', accepted: ['gyo'] },
+
+      { id: 96, row: 24, char: 'じゃ', romaji: 'ja',  accepted: ['ja', 'zya', 'jya'] },
+      { id: 97, row: 24, char: 'じゅ', romaji: 'ju',  accepted: ['ju', 'zyu', 'jyu'] },
+      { id: 98, row: 24, char: 'じょ', romaji: 'jo',  accepted: ['jo', 'zyo', 'jyo'] },
+
+      { id: 99, row: 25, char: 'びゃ', romaji: 'bya', accepted: ['bya'] },
+      { id: 100, row: 25, char: 'びゅ', romaji: 'byu', accepted: ['byu'] },
+      { id: 101, row: 25, char: 'びょ', romaji: 'byo', accepted: ['byo'] },
+
+      { id: 102, row: 26, char: 'ぴゃ', romaji: 'pya', accepted: ['pya'] },
+      { id: 103, row: 26, char: 'ぴゅ', romaji: 'pyu', accepted: ['pyu'] },
+      { id: 104, row: 26, char: 'ぴょ', romaji: 'pyo', accepted: ['pyo'] }
+    ];
+
+    // Chỉ hiển thị tên Hàng 1 -> Hàng 26 thuần túy
+    const ROW_METADATA = Array.from({ length: 26 }, (_, i) => ({
+      row: i + 1,
+      label: `Hàng ${i + 1}`
+    }));
+
+    const STORAGE_KEY_CHOICE = 'hiragana_full104_record_choice_v1';
+    const STORAGE_KEY_TYPING = 'hiragana_full104_record_typing_v1';
+
+    const state = {
+      mode: 'practice',
+      format: 'choice',
+      selectedRows: Array.from({ length: 26 }, (_, i) => i + 1), // Mặc định đủ 26 hàng
+      currentChar: null,
+      currentOptions: [],
+      isAnswerLocked: false,
+      practiceLastCharId: null,
+      exam: {
+        queue: [],
+        currentIndex: 0,
+        correctCount: 0,
+        currentStreak: 0,
+        maxStreak: 0,
+        results: [],
+        total: 104
+      }
+    };
+
+    function getActiveDataset() {
+      if (state.format === 'choice') {
+        return HIRAGANA_FULL_DATA;
+      }
+      return HIRAGANA_FULL_DATA.filter(item => state.selectedRows.includes(item.row));
+    }
+
+    function loadRecords() {
+      const choiceRec = JSON.parse(localStorage.getItem(STORAGE_KEY_CHOICE)) || { correct: 0, pct: 0, streak: 0 };
+      const typingRec = JSON.parse(localStorage.getItem(STORAGE_KEY_TYPING)) || { correct: 0, pct: 0, streak: 0 };
+
+      document.getElementById('record-choice-correct').innerText = choiceRec.correct;
+      document.getElementById('record-choice-pct').innerText = `${choiceRec.pct}%`;
+      document.getElementById('record-choice-streak').innerText = choiceRec.streak;
+
+      document.getElementById('record-typing-correct').innerText = typingRec.correct;
+      document.getElementById('record-typing-pct').innerText = `${typingRec.pct}%`;
+      document.getElementById('record-typing-streak').innerText = typingRec.streak;
+    }
+
+    function checkAndSaveExamRecord() {
+      if (state.exam.total !== 104) return false;
+
+      const storageKey = state.format === 'choice' ? STORAGE_KEY_CHOICE : STORAGE_KEY_TYPING;
+      const currentRec = JSON.parse(localStorage.getItem(storageKey)) || { correct: 0, pct: 0, streak: 0 };
+
+      const examCorrect = state.exam.correctCount;
+      const examMaxStreak = state.exam.maxStreak;
+
+      let isNewRecord = false;
+      if (examCorrect > currentRec.correct || (examCorrect === currentRec.correct && examMaxStreak > currentRec.streak)) {
+        isNewRecord = true;
+        currentRec.correct = Math.max(currentRec.correct, examCorrect);
+        currentRec.pct = Math.round((currentRec.correct / 104) * 100);
+        currentRec.streak = Math.max(currentRec.streak, examMaxStreak);
+        localStorage.setItem(storageKey, JSON.stringify(currentRec));
+        loadRecords();
+      }
+
+      return isNewRecord;
+    }
+
+    // DOM Elements
+    const elBackdrop = document.getElementById('theme-backdrop');
+    const elCanvas = document.getElementById('ambient-canvas');
+    const elHiraganaDisplay = document.getElementById('hiragana-display');
+    const elPromptLabel = document.getElementById('prompt-label');
+    const btnModePractice = document.getElementById('btn-mode-practice');
+    const btnModeExam = document.getElementById('btn-mode-exam');
+    const examModeTitle = document.getElementById('exam-mode-title');
+    const btnFormatChoice = document.getElementById('btn-format-choice');
+    const btnFormatTyping = document.getElementById('btn-format-typing');
+    const btnRestart = document.getElementById('btn-restart');
+    const sectionChoice = document.getElementById('section-choice');
+    const sectionTyping = document.getElementById('section-typing');
+    const typingInput = document.getElementById('typing-input');
+    const choiceButtons = document.querySelectorAll('.choice-btn');
+    const examStatsBar = document.getElementById('exam-stats-bar');
+    const examQuestionIndex = document.getElementById('exam-question-index');
+    const examTotalQuestions = document.getElementById('exam-total-questions');
+    const examTotalQuestions2 = document.getElementById('exam-total-questions-2');
+    const examCorrectCount = document.getElementById('exam-correct-count');
+    const examStreakCount = document.getElementById('exam-streak-count');
+    const examAccuracyPct = document.getElementById('exam-accuracy-pct');
+    const feedbackContainer = document.getElementById('feedback-container');
+    const feedbackMessage = document.getElementById('feedback-message');
+    const btnNextAction = document.getElementById('btn-next-action');
+    const modalResult = document.getElementById('modal-result');
+    const modalCorrectCount = document.getElementById('modal-correct-count');
+    const modalTotalCount = document.getElementById('modal-total-count');
+    const modalMaxStreak = document.getElementById('modal-max-streak');
+    const modalAccuracy = document.getElementById('modal-accuracy');
+    const modalReviewGrid = document.getElementById('modal-review-grid');
+    const btnModalRetryExam = document.getElementById('btn-modal-retry-exam');
+    const btnModalGoPractice = document.getElementById('btn-modal-go-practice');
+    const rowFilterPanel = document.getElementById('row-filter-panel');
+    const rowFilterContainer = document.getElementById('row-filter-container');
+    const btnToggleAllRows = document.getElementById('btn-toggle-all-rows');
+    const btnToggleAllText = document.getElementById('btn-toggle-all-text');
+    const selectedCountBadge = document.getElementById('selected-count-badge');
+    const btnQuickBasic = document.getElementById('btn-quick-basic');
+    const btnQuickDakuon = document.getElementById('btn-quick-dakuon');
+    const btnQuickYoon = document.getElementById('btn-quick-yoon');
+
+    function renderRowSelector() {
+      rowFilterContainer.innerHTML = '';
+      ROW_METADATA.forEach(meta => {
+        const isSelected = state.selectedRows.includes(meta.row);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.row = meta.row;
+        btn.className = `py-1.5 px-2 rounded-lg font-bold text-center text-xs transition-all border ${
+          isSelected 
+            ? 'bg-indigo-600/40 border-indigo-400 text-white shadow-sm ring-1 ring-indigo-400/50' 
+            : 'bg-white/5 border-white/10 text-slate-400 hover:text-white hover:bg-white/10'
+        }`;
+
+        btn.innerHTML = `<span>${meta.label}</span>`;
+        btn.addEventListener('click', () => toggleRowSelection(meta.row));
+        rowFilterContainer.appendChild(btn);
+      });
+
+      updateSelectionSummary();
+    }
+
+    function toggleRowSelection(rowNum) {
+      const idx = state.selectedRows.indexOf(rowNum);
+      if (idx > -1) {
+        if (state.selectedRows.length === 1) return;
+        state.selectedRows.splice(idx, 1);
+      } else {
+        state.selectedRows.push(rowNum);
+        state.selectedRows.sort((a, b) => a - b);
+      }
+
+      renderRowSelector();
+
+      if (state.mode === 'exam') {
+        startNewExamSession();
+      } else {
+        loadCurrentQuestion();
+      }
+    }
+
+    function updateSelectionSummary() {
+      const activeCount = getActiveDataset().length;
+      selectedCountBadge.innerText = `${activeCount} câu`;
+      
+      if (state.format === 'typing') {
+        examModeTitle.innerText = activeCount === 104 ? 'Kiểm tra 104 câu' : `Kiểm tra (${activeCount} câu)`;
+      } else {
+        examModeTitle.innerText = 'Kiểm tra 104 câu';
+      }
+
+      if (state.selectedRows.length === ROW_METADATA.length) {
+        btnToggleAllText.innerText = 'Bỏ chọn hết';
+      } else {
+        btnToggleAllText.innerText = 'Chọn tất cả';
+      }
+    }
+
+    btnToggleAllRows.addEventListener('click', () => {
+      if (state.selectedRows.length === ROW_METADATA.length) {
+        state.selectedRows = [1];
+      } else {
+        state.selectedRows = ROW_METADATA.map(r => r.row);
+      }
+      renderRowSelector();
+      if (state.mode === 'exam') startNewExamSession();
+      else loadCurrentQuestion();
+    });
+
+    btnQuickBasic.addEventListener('click', () => {
+      state.selectedRows = Array.from({ length: 10 }, (_, i) => i + 1); // 1-10
+      renderRowSelector();
+      if (state.mode === 'exam') startNewExamSession();
+      else loadCurrentQuestion();
+    });
+
+    btnQuickDakuon.addEventListener('click', () => {
+      state.selectedRows = [11, 12, 13, 14, 15]; // 11-15
+      renderRowSelector();
+      if (state.mode === 'exam') startNewExamSession();
+      else loadCurrentQuestion();
+    });
+
+    btnQuickYoon.addEventListener('click', () => {
+      state.selectedRows = Array.from({ length: 11 }, (_, i) => i + 16); // 16-26
+      renderRowSelector();
+      if (state.mode === 'exam') startNewExamSession();
+      else loadCurrentQuestion();
+    });
+
+    /*
+      =======================================================
+      BỘ 10 HIỆU ỨNG CANVAS & BACKGROUND GRADIENT CHUYÊN NGHIỆP
+      TỰ ĐỘNG XOAY VÒNG MỖI 10 GIÂY - CẤM TÙY CHỌN BẰNG NÚT BẤM
+      =======================================================
+    */
+    const ctx = elCanvas.getContext('2d');
+    let canvasW = 0, canvasH = 0;
+    let particles = [];
+    let currentThemeIndex = 0;
+    let shootingStars = [];
+    let themeTime = 0;
+
+    const THEMES = [
+      {
+        name: 'Sakura Blossom 3D',
+        backdrop: 'radial-gradient(circle at 50% 25%, #3b1126 0%, #1a0814 55%, #080206 100%)',
+        type: 'sakura',
+        count: 50
+      },
+      {
+        name: 'Cyber Matrix Circuit',
+        backdrop: 'radial-gradient(circle at 50% 30%, #0a2136 0%, #06111e 55%, #02070c 100%)',
+        type: 'cyber',
+        count: 48
+      },
+      {
+        name: 'Bamboo Grove Fireflies',
+        backdrop: 'radial-gradient(circle at 50% 25%, #0d2a1f 0%, #06150f 55%, #020805 100%)',
+        type: 'fireflies',
+        count: 55
+      },
+      {
+        name: 'Sunset Torii Embers',
+        backdrop: 'radial-gradient(circle at 50% 35%, #421c0e 0%, #210d07 55%, #0a0302 100%)',
+        type: 'embers',
+        count: 60
+      },
+      {
+        name: 'Cosmic Nebula & Stardust',
+        backdrop: 'radial-gradient(circle at 50% 25%, #1f1845 0%, #0d0a22 55%, #04030d 100%)',
+        type: 'cosmos',
+        count: 75
+      },
+      {
+        name: 'Deep Sea Bioluminescence',
+        backdrop: 'radial-gradient(circle at 50% 30%, #082638 0%, #041420 55%, #01070c 100%)',
+        type: 'deepsea',
+        count: 40
+      },
+      {
+        name: 'Autumn Momiji Fall',
+        backdrop: 'radial-gradient(circle at 50% 20%, #451b14 0%, #240c08 55%, #0b0302 100%)',
+        type: 'momiji',
+        count: 36
+      },
+      {
+        name: 'Ethereal Northern Aurora',
+        backdrop: 'radial-gradient(circle at 50% 25%, #0a2b29 0%, #05161c 55%, #02070a 100%)',
+        type: 'aurora',
+        count: 35
+      },
+      {
+        name: 'Zen Raindrops & Ripples',
+        backdrop: 'radial-gradient(circle at 50% 30%, #152233 0%, #0b131e 55%, #03060a 100%)',
+        type: 'rain',
+        count: 45
+      },
+      {
+        name: 'Shinto Mystic Spirit',
+        backdrop: 'radial-gradient(circle at 50% 25%, #2e153b 0%, #170820 55%, #07020a 100%)',
+        type: 'spirit',
+        count: 52
+      }
+    ];
+
+    function resizeCanvas() {
+      canvasW = elCanvas.width = window.innerWidth;
+      canvasH = elCanvas.height = window.innerHeight;
+      initParticles();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    function initParticles() {
+      particles = [];
+      const theme = THEMES[currentThemeIndex];
+
+      if (theme.type === 'sakura') {
+        for (let i = 0; i < theme.count; i++) {
+          particles.push({
+            isFlower: Math.random() < 0.12,
+            x: Math.random() * canvasW,
+            y: Math.random() * canvasH,
+            size: 11 + Math.random() * 10,
+            speedY: 0.8 + Math.random() * 1.4,
+            speedX: -0.4 + Math.random() * 0.8,
+            rotation: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.03,
+            swing: Math.random() * Math.PI * 2,
+            swingSpeed: 0.02 + Math.random() * 0.02,
+            flipAngle: Math.random() * Math.PI * 2,
+            flipSpeed: 0.03 + Math.random() * 0.04,
+            alpha: 0.45 + Math.random() * 0.45
+          });
+        }
+      } else if (theme.type === 'cyber') {
+        for (let i = 0; i < theme.count; i++) {
+          particles.push({
+            x: Math.random() * canvasW,
+            y: Math.random() * canvasH,
+            size: 2 + Math.random() * 3,
+            speedY: (Math.random() - 0.5) * 1.1,
+            speedX: (Math.random() - 0.5) * 1.1,
+            color: Math.random() > 0.45 ? '#38bdf8' : '#ec4899',
+            alpha: 0.35 + Math.random() * 0.5
+          });
+        }
+      } else if (theme.type === 'fireflies') {
+        for (let i = 0; i < theme.count; i++) {
+          particles.push({
+            x: Math.random() * canvasW,
+            y: Math.random() * canvasH,
+            size: 2.5 + Math.random() * 4,
+            speedY: -0.3 - Math.random() * 0.5,
+            speedX: (Math.random() - 0.5) * 0.5,
+            pulse: Math.random() * Math.PI * 2,
+            pulseSpeed: 0.03 + Math.random() * 0.04,
+            baseAlpha: 0.3 + Math.random() * 0.6
+          });
+        }
+      } else if (theme.type === 'embers') {
+        for (let i = 0; i < theme.count; i++) {
+          particles.push({
+            x: Math.random() * canvasW,
+            y: Math.random() * canvasH,
+            size: 2 + Math.random() * 3.5,
+            speedY: -1.0 - Math.random() * 1.8,
+            speedX: (Math.random() - 0.5) * 0.8,
+            flicker: Math.random() * Math.PI,
+            flickerSpeed: 0.05 + Math.random() * 0.07,
+            color: Math.random() > 0.4 ? '#fb923c' : '#ef4444',
+            alpha: 0.4 + Math.random() * 0.6
+          });
+        }
+      } else if (theme.type === 'cosmos') {
+        for (let i = 0; i < theme.count; i++) {
+          particles.push({
+            x: Math.random() * canvasW,
+            y: Math.random() * canvasH,
+            size: 1 + Math.random() * 2.2,
+            twinkle: Math.random() * Math.PI * 2,
+            twinkleSpeed: 0.02 + Math.random() * 0.05,
+            alpha: 0.2 + Math.random() * 0.7
+          });
+        }
+      } else if (theme.type === 'deepsea') {
+        for (let i = 0; i < theme.count; i++) {
+          particles.push({
+            x: Math.random() * canvasW,
+            y: Math.random() * canvasH,
+            size: 6 + Math.random() * 12,
+            speedY: -0.25 - Math.random() * 0.4,
+            speedX: (Math.random() - 0.5) * 0.3,
+            pulse: Math.random() * Math.PI * 2,
+            pulseSpeed: 0.02 + Math.random() * 0.03,
+            alpha: 0.15 + Math.random() * 0.35
+          });
+        }
+      } else if (theme.type === 'momiji') {
+        for (let i = 0; i < theme.count; i++) {
+          particles.push({
+            x: Math.random() * canvasW,
+            y: Math.random() * canvasH,
+            size: 12 + Math.random() * 10,
+            speedY: 0.9 + Math.random() * 1.3,
+            speedX: -0.5 + Math.random() * 1.0,
+            rot: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.035,
+            tilt: Math.random() * Math.PI,
+            tiltSpeed: 0.025 + Math.random() * 0.03,
+            color: Math.random() > 0.5 ? '#f97316' : '#dc2626',
+            alpha: 0.45 + Math.random() * 0.45
+          });
+        }
+      } else if (theme.type === 'aurora') {
+        for (let i = 0; i < theme.count; i++) {
+          particles.push({
+            x: Math.random() * canvasW,
+            y: Math.random() * canvasH * 0.6,
+            radius: 30 + Math.random() * 50,
+            speedX: 0.2 + Math.random() * 0.4,
+            alpha: 0.1 + Math.random() * 0.25,
+            color: Math.random() > 0.5 ? '#2dd4bf' : '#818cf8',
+            wavePhase: Math.random() * Math.PI * 2
+          });
+        }
+      } else if (theme.type === 'rain') {
+        for (let i = 0; i < theme.count; i++) {
+          particles.push({
+            x: Math.random() * canvasW,
+            y: Math.random() * canvasH,
+            len: 16 + Math.random() * 14,
+            speedY: 8 + Math.random() * 7,
+            speedX: -1.5,
+            alpha: 0.18 + Math.random() * 0.25,
+            rippling: false,
+            rippleR: 0,
+            rippleMax: 12 + Math.random() * 15,
+            rippleX: 0,
+            rippleY: 0
+          });
+        }
+      } else if (theme.type === 'spirit') {
+        for (let i = 0; i < theme.count; i++) {
+          particles.push({
+            cx: Math.random() * canvasW,
+            cy: Math.random() * canvasH,
+            radX: 20 + Math.random() * 60,
+            radY: 15 + Math.random() * 45,
+            angle: Math.random() * Math.PI * 2,
+            orbitSpeed: 0.015 + Math.random() * 0.02,
+            size: 3 + Math.random() * 5,
+            alpha: 0.3 + Math.random() * 0.5
+          });
+        }
+      }
+    }
+
+    function drawSakuraPetal(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.scale(Math.cos(p.flipAngle), 1);
+
+      const s = p.size;
+      const grad = ctx.createLinearGradient(0, 0, 0, s);
+      grad.addColorStop(0, `rgba(255, 230, 240, ${p.alpha * 0.95})`);
+      grad.addColorStop(0.5, `rgba(244, 114, 182, ${p.alpha * 0.85})`);
+      grad.addColorStop(1, `rgba(225, 29, 72, ${p.alpha * 0.7})`);
+
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(-s * 0.55, s * 0.25, -s * 0.65, s * 0.75, -s * 0.2, s);
+      ctx.lineTo(-s * 0.05, s * 0.86);
+      ctx.lineTo(0, s * 0.92);
+      ctx.lineTo(s * 0.05, s * 0.86);
+      ctx.lineTo(s * 0.2, s);
+      ctx.bezierCurveTo(s * 0.65, s * 0.75, s * 0.55, s * 0.25, 0, 0);
+      ctx.closePath();
+
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawFivePetalFlower(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.scale(Math.cos(p.flipAngle * 0.7) * 0.85, 0.85);
+
+      const r = p.size * 0.7;
+      for (let i = 0; i < 5; i++) {
+        ctx.save();
+        ctx.rotate((i * Math.PI * 2) / 5);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(-r * 0.45, r * 0.35, -r * 0.4, r * 0.9, 0, r);
+        ctx.bezierCurveTo(r * 0.4, r * 0.9, r * 0.45, r * 0.35, 0, 0);
+        ctx.fillStyle = `rgba(251, 207, 232, ${p.alpha * 0.85})`;
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 0.16, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(236, 72, 153, ${p.alpha * 0.9})`;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawMomijiLeaf(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.scale(Math.cos(p.tilt), 1);
+
+      const s = p.size;
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha;
+      ctx.beginPath();
+      for (let i = 0; i < 5; i++) {
+        const a = (i - 2) * (Math.PI / 4.5);
+        const lx = Math.sin(a) * s;
+        const ly = -Math.cos(a) * s;
+        if (i === 0) ctx.moveTo(0, 0);
+        ctx.lineTo(lx, ly);
+        ctx.lineTo(lx * 0.4, ly * 0.4);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+
+    function renderAmbientCanvas() {
+      ctx.clearRect(0, 0, canvasW, canvasH);
+      const theme = THEMES[currentThemeIndex];
+      themeTime += 0.02;
+
+      if (theme.type === 'sakura') {
+        particles.forEach(p => {
+          p.y += p.speedY;
+          p.x += Math.sin(p.swing) * 0.85 + p.speedX;
+          p.swing += p.swingSpeed;
+          p.rotation += p.rotSpeed;
+          p.flipAngle += p.flipSpeed;
+          if (p.y > canvasH + 25) { p.y = -25; p.x = Math.random() * canvasW; }
+          if (p.x > canvasW + 25) p.x = -25;
+          if (p.x < -25) p.x = canvasW + 25;
+
+          if (p.isFlower) drawFivePetalFlower(p);
+          else drawSakuraPetal(p);
+        });
+      } else if (theme.type === 'cyber') {
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 110) {
+              ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 110) * 0.16})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+        particles.forEach(p => {
+          p.x += p.speedX; p.y += p.speedY;
+          if (p.x < 0 || p.x > canvasW) p.speedX *= -1;
+          if (p.y < 0 || p.y > canvasH) p.speedY *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        });
+      } else if (theme.type === 'fireflies') {
+        particles.forEach(p => {
+          p.y += p.speedY; p.x += p.speedX;
+          p.pulse += p.pulseSpeed;
+          const currentAlpha = p.baseAlpha * (0.55 + 0.45 * Math.sin(p.pulse));
+          if (p.y < -20) p.y = canvasH + 20;
+          if (p.x < -20) p.x = canvasW + 20;
+          if (p.x > canvasW + 20) p.x = -20;
+
+          const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2.4);
+          gradient.addColorStop(0, `rgba(52, 211, 153, ${currentAlpha})`);
+          gradient.addColorStop(1, 'rgba(52, 211, 153, 0)');
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 2.4, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      } else if (theme.type === 'embers') {
+        particles.forEach(p => {
+          p.y += p.speedY;
+          p.x += p.speedX + Math.sin(themeTime + p.y * 0.05) * 0.5;
+          p.flicker += p.flickerSpeed;
+          const curAlpha = p.alpha * (0.6 + 0.4 * Math.sin(p.flicker));
+          if (p.y < -20) { p.y = canvasH + 20; p.x = Math.random() * canvasW; }
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = curAlpha;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        });
+      } else if (theme.type === 'cosmos') {
+        particles.forEach(p => {
+          p.twinkle += p.twinkleSpeed;
+          const currentAlpha = p.alpha * (0.5 + 0.5 * Math.sin(p.twinkle));
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(224, 231, 255, ${currentAlpha})`;
+          ctx.fill();
+        });
+
+        if (Math.random() < 0.012 && shootingStars.length < 2) {
+          shootingStars.push({
+            x: Math.random() * canvasW * 0.8,
+            y: Math.random() * canvasH * 0.4,
+            len: 120 + Math.random() * 80,
+            speed: 12 + Math.random() * 8,
+            life: 1.0
+          });
+        }
+        shootingStars.forEach((star, idx) => {
+          ctx.save();
+          ctx.strokeStyle = `rgba(255, 255, 255, ${star.life})`;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(star.x, star.y);
+          ctx.lineTo(star.x + star.len * 0.8, star.y + star.len * 0.5);
+          ctx.stroke();
+          ctx.restore();
+          star.x += star.speed;
+          star.y += star.speed * 0.6;
+          star.life -= 0.035;
+          if (star.life <= 0) shootingStars.splice(idx, 1);
+        });
+      } else if (theme.type === 'deepsea') {
+        particles.forEach(p => {
+          p.y += p.speedY; p.x += p.speedX;
+          p.pulse += p.pulseSpeed;
+          if (p.y < -40) { p.y = canvasH + 40; p.x = Math.random() * canvasW; }
+          const curAlpha = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2);
+          grad.addColorStop(0, `rgba(56, 189, 248, ${curAlpha})`);
+          grad.addColorStop(1, 'rgba(14, 165, 233, 0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      } else if (theme.type === 'momiji') {
+        particles.forEach(p => {
+          p.y += p.speedY;
+          p.x += Math.sin(p.tilt) * 0.9 + p.speedX;
+          p.rot += p.rotSpeed;
+          p.tilt += p.tiltSpeed;
+          if (p.y > canvasH + 25) { p.y = -25; p.x = Math.random() * canvasW; }
+          drawMomijiLeaf(p);
+        });
+      } else if (theme.type === 'aurora') {
+        particles.forEach(p => {
+          p.x += p.speedX;
+          if (p.x > canvasW + 50) p.x = -50;
+          const offsetY = Math.sin(themeTime + p.wavePhase) * 25;
+          const grad = ctx.createRadialGradient(p.x, p.y + offsetY, 0, p.x, p.y + offsetY, p.radius);
+          grad.addColorStop(0, p.color);
+          grad.addColorStop(1, 'transparent');
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y + offsetY, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        });
+      } else if (theme.type === 'rain') {
+        particles.forEach(p => {
+          if (!p.rippling) {
+            ctx.strokeStyle = `rgba(186, 230, 253, ${p.alpha})`;
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.x + p.speedX * 1.5, p.y + p.len);
+            ctx.stroke();
+
+            p.x += p.speedX;
+            p.y += p.speedY;
+
+            if (p.y > canvasH - 40 && Math.random() < 0.25) {
+              p.rippling = true;
+              p.rippleX = p.x;
+              p.rippleY = p.y;
+              p.rippleR = 1;
+            } else if (p.y > canvasH + 20) {
+              p.y = -20;
+              p.x = Math.random() * canvasW;
+            }
+          } else {
+            p.rippleR += 0.8;
+            const ripAlpha = (1 - p.rippleR / p.rippleMax) * 0.4;
+            ctx.strokeStyle = `rgba(186, 230, 253, ${ripAlpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.ellipse(p.rippleX, p.rippleY, p.rippleR * 2, p.rippleR * 0.7, 0, 0, Math.PI * 2);
+            ctx.stroke();
+
+            if (p.rippleR >= p.rippleMax) {
+              p.rippling = false;
+              p.y = -20;
+              p.x = Math.random() * canvasW;
+            }
+          }
+        });
+      } else if (theme.type === 'spirit') {
+        particles.forEach(p => {
+          p.angle += p.orbitSpeed;
+          const x = p.cx + Math.cos(p.angle) * p.radX;
+          const y = p.cy + Math.sin(p.angle) * p.radY;
+          const grad = ctx.createRadialGradient(x, y, 0, x, y, p.size * 2.5);
+          grad.addColorStop(0, `rgba(192, 132, 252, ${p.alpha})`);
+          grad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(x, y, p.size * 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      requestAnimationFrame(renderAmbientCanvas);
+    }
+
+    function applyTheme(index) {
+      currentThemeIndex = index;
+      const theme = THEMES[index];
+      elBackdrop.style.background = theme.backdrop;
+      initParticles();
+    }
+
+    function startThemeAutoCycle() {
+      applyTheme(0);
+      setInterval(() => {
+        const nextIndex = (currentThemeIndex + 1) % THEMES.length;
+        applyTheme(nextIndex);
+      }, 10000);
+    }
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function generateOptions(targetItem) {
+      const distractors = HIRAGANA_FULL_DATA.filter(item => item.id !== targetItem.id);
+      const shuffledDistractors = shuffleArray(distractors).slice(0, 3);
+      return shuffleArray([targetItem, ...shuffledDistractors]);
+    }
+
+    function updateExamStatsUI() {
+      const currentIdx = state.exam.currentIndex;
+      const total = state.exam.total;
+      const displayStep = Math.min(currentIdx + 1, total);
+
+      examQuestionIndex.innerText = displayStep;
+      examTotalQuestions.innerText = total;
+      examTotalQuestions2.innerText = total;
+
+      examCorrectCount.innerText = state.exam.correctCount;
+      examStreakCount.innerText = state.exam.currentStreak;
+
+      const pct = currentIdx === 0 ? 0 : Math.round((state.exam.correctCount / currentIdx) * 100);
+      examAccuracyPct.innerText = `${pct}%`;
+    }
+
+    function loadCurrentQuestion() {
+      state.isAnswerLocked = false;
+      feedbackContainer.classList.add('hidden');
+      feedbackContainer.classList.remove('bg-emerald-500/20', 'border-emerald-500/40', 'bg-rose-500/20', 'border-rose-500/40', 'flex');
+
+      const activeDataset = getActiveDataset();
+      if (activeDataset.length === 0) return;
+
+      if (state.mode === 'exam') {
+        if (state.exam.currentIndex >= state.exam.total) {
+          showExamResultModal();
+          return;
+        }
+        state.currentChar = state.exam.queue[state.exam.currentIndex];
+        updateExamStatsUI();
+      } else {
+        let pool = activeDataset;
+        if (state.practiceLastCharId && activeDataset.length > 1) {
+          pool = activeDataset.filter(c => c.id !== state.practiceLastCharId);
+        }
+        state.currentChar = pool[Math.floor(Math.random() * pool.length)];
+        state.practiceLastCharId = state.currentChar.id;
+      }
+
+      elHiraganaDisplay.innerText = state.currentChar.char;
+      elHiraganaDisplay.classList.remove('animate-shake');
+
+      state.currentOptions = generateOptions(state.currentChar);
+      choiceButtons.forEach((btn, index) => {
+        const optionItem = state.currentOptions[index];
+        const textSpan = btn.querySelector('.choice-text');
+        textSpan.innerText = optionItem.romaji;
+        btn.disabled = false;
+        btn.className = 'choice-btn group interactive-btn p-4 rounded-2xl flex items-center justify-between font-bold text-lg sm:text-xl text-slate-100 hover:border-pink-400';
+      });
+
+      typingInput.value = '';
+      typingInput.disabled = false;
+      typingInput.className = 'w-full bg-slate-950/90 border-2 border-slate-700 focus:border-pink-500 rounded-2xl px-5 py-4 text-center font-bold text-2xl text-white placeholder-slate-500 outline-none transition-all shadow-inner focus:shadow-pink-500/20';
+
+      if (state.format === 'typing') {
+        setTimeout(() => typingInput.focus(), 50);
+      }
+    }
+
+    function processAnswer(userAnswerText, selectedBtn = null) {
+      if (state.isAnswerLocked) return;
+      state.isAnswerLocked = true;
+
+      const current = state.currentChar;
+      const normalizedUser = userAnswerText.trim().toLowerCase();
+      const isCorrect = current.accepted.includes(normalizedUser);
+
+      choiceButtons.forEach(btn => btn.disabled = true);
+      typingInput.disabled = true;
+
+      if (state.mode === 'exam') {
+        if (isCorrect) {
+          state.exam.correctCount++;
+          state.exam.currentStreak++;
+          if (state.exam.currentStreak > state.exam.maxStreak) {
+            state.exam.maxStreak = state.exam.currentStreak;
+          }
+        } else {
+          state.exam.currentStreak = 0;
+        }
+
+        state.exam.results.push({
+          char: current.char,
+          romaji: current.romaji,
+          userAnswer: normalizedUser || '(trống)',
+          isCorrect: isCorrect
+        });
+        updateExamStatsUI();
+      }
+
+      if (isCorrect) {
+        if (selectedBtn) {
+          selectedBtn.classList.remove('interactive-btn');
+          selectedBtn.classList.add('bg-emerald-600', 'border-emerald-400', 'text-white', 'shadow-lg', 'shadow-emerald-500/30');
+        }
+        if (state.format === 'typing') {
+          typingInput.classList.remove('border-slate-700');
+          typingInput.classList.add('border-emerald-500', 'bg-emerald-950/40');
+        }
+
+        feedbackContainer.className = 'w-full mt-4 p-3.5 rounded-2xl flex items-center justify-between text-xs sm:text-sm font-semibold border bg-emerald-500/20 border-emerald-500/40 text-emerald-300 animate-pop';
+        feedbackMessage.innerHTML = `
+          <i class="fa-solid fa-circle-check text-base text-emerald-400"></i>
+          <span>Chính xác! <strong class="text-white font-mono uppercase">${state.currentChar.char}</strong> đọc là <strong class="text-white font-mono">${state.currentChar.romaji}</strong></span>
+        `;
+
+        setTimeout(() => advanceNextQuestion(), 550);
+      } else {
+        elHiraganaDisplay.classList.add('animate-shake');
+
+        if (selectedBtn) {
+          selectedBtn.classList.remove('interactive-btn');
+          selectedBtn.classList.add('bg-rose-600', 'border-rose-400', 'text-white', 'shadow-lg', 'shadow-rose-500/30');
+        }
+
+        if (state.format === 'choice') {
+          choiceButtons.forEach(btn => {
+            const text = btn.querySelector('.choice-text').innerText.trim().toLowerCase();
+            if (state.currentChar.accepted.includes(text)) {
+              btn.classList.remove('interactive-btn');
+              btn.classList.add('bg-emerald-600/80', 'border-emerald-400', 'text-white');
+            }
+          });
+        }
+
+        if (state.format === 'typing') {
+          typingInput.classList.remove('border-slate-700');
+          typingInput.classList.add('border-rose-500', 'bg-rose-950/40');
+        }
+
+        feedbackContainer.className = 'w-full mt-4 p-3.5 rounded-2xl flex items-center justify-between text-xs sm:text-sm font-semibold border bg-rose-500/20 border-rose-500/40 text-rose-200 animate-pop';
+        feedbackMessage.innerHTML = `
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-circle-xmark text-base text-rose-400"></i>
+            <span>Chưa đúng! <strong class="text-white text-base">${state.currentChar.char}</strong> đọc chuẩn là <strong class="text-emerald-300 font-mono text-base">${state.currentChar.romaji}</strong></span>
+          </div>
+        `;
+
+        btnNextAction.onclick = () => advanceNextQuestion();
+      }
+    }
+
+    function advanceNextQuestion() {
+      if (state.mode === 'exam') {
+        state.exam.currentIndex++;
+        if (state.exam.currentIndex >= state.exam.total) {
+          showExamResultModal();
+          return;
+        }
+      }
+      loadCurrentQuestion();
+    }
+
+    function startNewExamSession() {
+      const activeData = getActiveDataset();
+      state.mode = 'exam';
+      state.exam.queue = shuffleArray(activeData);
+      state.exam.total = activeData.length;
+      state.exam.currentIndex = 0;
+      state.exam.correctCount = 0;
+      state.exam.currentStreak = 0;
+      state.exam.maxStreak = 0;
+      state.exam.results = [];
+
+      examStatsBar.classList.remove('hidden');
+      btnModeExam.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-gradient-to-r from-pink-500 to-indigo-600 text-white shadow-md';
+      btnModePractice.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white';
+
+      modalResult.classList.add('hidden');
+      modalResult.classList.remove('flex');
+
+      loadCurrentQuestion();
+    }
+
+    function startPracticeMode() {
+      state.mode = 'practice';
+      examStatsBar.classList.add('hidden');
+
+      btnModePractice.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-white/15 text-white shadow-sm border border-white/15';
+      btnModeExam.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white';
+
+      modalResult.classList.add('hidden');
+      modalResult.classList.remove('flex');
+
+      loadCurrentQuestion();
+    }
+
+    function showExamResultModal() {
+      const total = state.exam.total;
+      const correct = state.exam.correctCount;
+      const pct = Math.round((correct / total) * 100);
+
+      modalCorrectCount.innerText = correct;
+      modalTotalCount.innerText = total;
+      modalMaxStreak.innerText = state.exam.maxStreak;
+      modalAccuracy.innerText = `${pct}%`;
+
+      document.getElementById('modal-sub-title').innerText = state.format === 'typing'
+        ? `Đánh giá ${total} câu từ các hàng bạn chọn`
+        : `Đánh giá toàn diện 104 câu Hiragana (26 hàng)`;
+
+      const isRecord = checkAndSaveExamRecord();
+
+      modalReviewGrid.innerHTML = '';
+      state.exam.results.forEach(item => {
+        const card = document.createElement('div');
+        card.className = item.isCorrect 
+          ? 'glass-card-subtle p-2.5 rounded-xl border border-emerald-500/30 flex items-center justify-between'
+          : 'glass-card-subtle p-2.5 rounded-xl border border-rose-500/40 bg-rose-500/10 flex items-center justify-between';
+
+        card.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="hiragana-glyph text-lg text-white font-black">${item.char}</span>
+            <div class="flex flex-col text-left">
+              <span class="text-xs font-mono font-bold ${item.isCorrect ? 'text-emerald-300' : 'text-slate-300'}">${item.romaji}</span>
+              ${!item.isCorrect ? `<span class="text-[10px] text-rose-300 truncate max-w-[55px]">${item.userAnswer}</span>` : ''}
+            </div>
+          </div>
+          <i class="fa-solid ${item.isCorrect ? 'fa-check text-emerald-400' : 'fa-xmark text-rose-400'} text-xs"></i>
+        `;
+        modalReviewGrid.appendChild(card);
+      });
+
+      if ((pct >= 75 || isRecord) && typeof confetti === 'function') {
+        confetti({ particleCount: 95, spread: 85, origin: { y: 0.6 } });
+      }
+
+      modalResult.classList.remove('hidden');
+      modalResult.classList.add('flex');
+    }
+
+    btnFormatChoice.addEventListener('click', () => {
+      state.format = 'choice';
+      btnFormatChoice.className = 'flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow-sm';
+      btnFormatTyping.className = 'flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-slate-400 hover:text-white';
+      
+      sectionChoice.classList.remove('hidden');
+      sectionTyping.classList.add('hidden');
+      
+      rowFilterPanel.classList.add('hidden');
+      state.selectedRows = Array.from({ length: 26 }, (_, i) => i + 1);
+      updateSelectionSummary();
+      
+      elPromptLabel.innerText = 'Chọn Romaji tương ứng cho ký tự trên (Phím 1-4):';
+      if (state.mode === 'exam') startNewExamSession();
+      else loadCurrentQuestion();
+    });
+
+    btnFormatTyping.addEventListener('click', () => {
+      state.format = 'typing';
+      btnFormatTyping.className = 'flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow-sm';
+      btnFormatChoice.className = 'flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-slate-400 hover:text-white';
+      
+      sectionChoice.classList.add('hidden');
+      sectionTyping.classList.remove('hidden');
+      
+      rowFilterPanel.classList.remove('hidden');
+      renderRowSelector();
+
+      elPromptLabel.innerText = 'Nhập Romaji vào ô bên dưới rồi nhấn Enter:';
+      setTimeout(() => typingInput.focus(), 60);
+
+      if (state.mode === 'exam') startNewExamSession();
+      else loadCurrentQuestion();
+    });
+
+    btnModePractice.addEventListener('click', () => startPracticeMode());
+    btnModeExam.addEventListener('click', () => startNewExamSession());
+    btnRestart.addEventListener('click', () => {
+      if (state.mode === 'exam') startNewExamSession();
+      else loadCurrentQuestion();
+    });
+
+    choiceButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.querySelector('.choice-text').innerText;
+        processAnswer(text, btn);
+      });
+    });
+
+    document.getElementById('typing-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!typingInput.value.trim()) return;
+      processAnswer(typingInput.value);
+    });
+
+    btnModalRetryExam.addEventListener('click', () => startNewExamSession());
+    btnModalGoPractice.addEventListener('click', () => startPracticeMode());
+
+    window.addEventListener('keydown', (e) => {
+      if (!modalResult.classList.contains('hidden')) {
+        if (e.key === 'Enter') startNewExamSession();
+        return;
+      }
+      if (!feedbackContainer.classList.contains('hidden') && state.isAnswerLocked) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          advanceNextQuestion();
+          return;
+        }
+      }
+      if (state.format === 'choice' && !state.isAnswerLocked) {
+        const keyIndex = parseInt(e.key) - 1;
+        if (keyIndex >= 0 && keyIndex < 4) {
+          e.preventDefault();
+          const targetBtn = choiceButtons[keyIndex];
+          const text = targetBtn.querySelector('.choice-text').innerText;
+          processAnswer(text, targetBtn);
+        }
+      }
+    });
+
+    window.onload = function() {
+      renderRowSelector();
+      loadRecords();
+      resizeCanvas();
+      startThemeAutoCycle();
+      renderAmbientCanvas();
+      startPracticeMode();
+    };
+  </script>
+</body>
+</html>
