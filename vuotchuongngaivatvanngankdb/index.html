@@ -115,7 +115,7 @@
 })();
 </script>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Vượt Chướng Ngại Vật — VANNGANKDB</title>
   <style>
     /* =========================================================================
@@ -158,8 +158,9 @@
     }
 
     html, body {
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       overscroll-behavior: none;
       touch-action: none;
@@ -180,6 +181,7 @@
       position: relative;
       width: 100vw;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       background: radial-gradient(circle at 50% 35%, #11152c 0%, #05060b 100%);
     }
@@ -813,54 +815,59 @@
       cursor: pointer;
     }
 
-    #touch-pad {
-      position: absolute;
-      bottom: max(16px, env(safe-area-inset-bottom));
-      left: max(14px, env(safe-area-inset-left));
-      right: max(14px, env(safe-area-inset-right));
-      z-index: 26;
+    /* ALWAYS-ON-TOP MOBILE CONTROLS (SAFE AREA + HIGH-CONTRAST GLASSMORPHISM) */
+    #mobile-controls {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
       display: none;
-      justify-content: space-between;
       align-items: flex-end;
+      justify-content: space-between;
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
       pointer-events: none;
       touch-action: none;
       user-select: none;
+      -webkit-user-select: none;
     }
 
-    #touch-pad.visible {
+    #mobile-controls.visible {
       display: flex;
     }
 
     .touch-group {
       display: flex;
-      gap: 12px;
+      gap: clamp(10px, 2vmin, 16px);
       padding: 8px;
-      border-radius: 22px;
-      background: rgba(11, 15, 30, 0.45);
-      backdrop-filter: blur(14px) saturate(140%);
-      -webkit-backdrop-filter: blur(14px) saturate(140%);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 24px;
+      background: rgba(8, 12, 26, 0.56);
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      border: 1.5px solid rgba(255, 255, 255, 0.24);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
       pointer-events: auto;
       touch-action: none;
     }
 
     .touch-key {
-      width: 64px;
-      height: 64px;
+      width: clamp(56px, 12vmin, 85px);
+      height: clamp(56px, 12vmin, 85px);
       border-radius: 18px;
-      background: rgba(16, 22, 42, 0.74);
+      background: rgba(14, 22, 46, 0.82);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.26);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.14);
-      color: #f4f8ff;
-      font-size: 20px;
-      font-weight: 800;
+      border: 2px solid rgba(255, 255, 255, 0.42);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+      color: #ffffff;
+      font-size: clamp(18px, 3.6vmin, 26px);
+      font-weight: 900;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 2px;
+      pointer-events: auto;
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
@@ -868,28 +875,175 @@
     }
 
     .touch-key .tk-sub {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      opacity: 0.85;
+      font-size: clamp(8px, 1.6vmin, 11px);
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      opacity: 0.92;
       text-transform: uppercase;
     }
 
     .touch-key.jump-key {
-      border-color: rgba(0, 245, 255, 0.48);
-      background: linear-gradient(145deg, rgba(0, 245, 255, 0.22), rgba(14, 24, 48, 0.8));
+      border-color: #00f5ff;
+      background: linear-gradient(145deg, rgba(0, 245, 255, 0.28), rgba(10, 22, 48, 0.86));
     }
 
     .touch-key.dash-key {
-      border-color: rgba(255, 170, 0, 0.45);
-      background: linear-gradient(145deg, rgba(255, 170, 0, 0.18), rgba(18, 20, 40, 0.8));
+      border-color: #ffaa00;
+      background: linear-gradient(145deg, rgba(255, 170, 0, 0.24), rgba(18, 20, 42, 0.86));
     }
 
     .touch-key.active {
-      background: linear-gradient(135deg, rgba(255, 30, 122, 0.86), rgba(255, 106, 43, 0.82));
+      background: linear-gradient(135deg, rgba(255, 30, 122, 0.92), rgba(255, 106, 43, 0.88));
       border-color: #ffffff;
       transform: scale(0.92);
-      box-shadow: 0 0 20px rgba(255, 30, 122, 0.55);
+      box-shadow: 0 0 24px rgba(255, 30, 122, 0.68);
+    }
+
+    /* MAIN MENU 5-LEVEL GRAPHICS PRESET SELECTOR */
+    .gfx-selector-box {
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      text-align: left;
+    }
+
+    .gfx-selector-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 9px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--neon-cyan);
+    }
+
+    .gfx-pills {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+
+    .gfx-pill-btn {
+      appearance: none;
+      padding: 8px 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(12, 16, 32, 0.72);
+      color: var(--text-secondary);
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .gfx-pill-btn:hover {
+      border-color: rgba(255, 255, 255, 0.42);
+      color: #fff;
+    }
+
+    .gfx-pill-btn.active {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.28), rgba(255, 30, 122, 0.28));
+      border-color: var(--neon-cyan);
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(0, 245, 255, 0.35);
+    }
+
+    .gfx-desc {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* FPS AUTO-SCALER WARNING TOAST */
+    #fps-toast {
+      position: fixed;
+      top: 66px;
+      right: 16px;
+      z-index: 9998;
+      max-width: min(320px, calc(100vw - 32px));
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(24, 14, 6, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid #ffaa00;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 12px;
+      color: #ffe8c2;
+    }
+
+    #fps-toast.hidden {
+      display: none;
+    }
+
+    .fps-toast-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* SKIN WARDROBE GRID */
+    .skin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .skin-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: transform 0.16s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .skin-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--neon-cyan);
+      background: rgba(0, 245, 255, 0.08);
+    }
+
+    .skin-card.selected {
+      border-color: #39ff88;
+      background: rgba(57, 255, 136, 0.10);
+      box-shadow: 0 0 22px rgba(57, 255, 136, 0.25);
+    }
+
+    .skin-swatch {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .skin-name {
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .skin-tag {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-align: center;
     }
 
     /* =========================================================================
@@ -999,6 +1153,7 @@
 
       <div class="hud-cluster">
         <button class="hud-action-btn" id="btn-hud-restart">↻ Chơi lại (R)</button>
+        <button class="hud-action-btn" id="btn-hud-gamepad" title="Bật/Tắt nút điều khiển ảo">🎮 Tay cầm</button>
         <button class="hud-action-btn" id="btn-hud-mute">🔊 Âm thanh</button>
         <button class="hud-action-btn" id="btn-hud-map">🗺 Bản đồ</button>
         <button class="hud-action-btn" id="btn-hud-menu">☰ Menu</button>
@@ -1027,8 +1182,17 @@
       </div>
     </div>
 
-    <!-- TOUCH CONTROLS (GLASSMORPHISM MULTI-TOUCH) -->
-    <div id="touch-pad">
+    <!-- FPS MONITOR & AUTO-SCALER TOAST -->
+    <div id="fps-toast" class="hidden">
+      <div id="fps-toast-msg">⚠ FPS đang tụt dưới 30! Đề xuất hạ 1 mức đồ họa để chơi mượt 60FPS.</div>
+      <div class="fps-toast-actions">
+        <button type="button" class="btn btn-sm btn-neon-cyan" id="btn-fps-downgrade">⚡ Hạ 1 mức ngay</button>
+        <button type="button" class="btn btn-sm" id="btn-fps-dismiss">Bỏ qua</button>
+      </div>
+    </div>
+
+    <!-- ALWAYS-ON-TOP MOBILE CONTROLS (SAFE AREA + HIGH-CONTRAST GLASSMORPHISM) -->
+    <div id="mobile-controls">
       <div class="touch-group" id="touch-dpad-left">
         <button type="button" class="touch-key" id="tk-left" aria-label="Trái"><span>◀</span><span class="tk-sub">Trái</span></button>
         <button type="button" class="touch-key" id="tk-right" aria-label="Phải"><span>▶</span><span class="tk-sub">Phải</span></button>
@@ -1047,12 +1211,27 @@
         <p class="menu-tagline">
           Chinh phục 20 chặng đường vượt chướng ngại vật đầy thú vị, rèn luyện phản xạ nhanh nhạy và khéo léo qua từng bước nhảy.
         </p>
+        <div class="gfx-selector-box">
+          <div class="gfx-selector-head">
+            <span>🖥 Chất Lượng Đồ Họa</span>
+            <span id="gfx-active-badge">CAO (PC)</span>
+          </div>
+          <div class="gfx-pills" id="gfx-pills">
+            <button type="button" class="gfx-pill-btn" data-preset="potato">Rất Thấp</button>
+            <button type="button" class="gfx-pill-btn" data-preset="low">Thấp</button>
+            <button type="button" class="gfx-pill-btn" data-preset="medium">T.Bình</button>
+            <button type="button" class="gfx-pill-btn" data-preset="high">Cao</button>
+            <button type="button" class="gfx-pill-btn" data-preset="ultra">MAX</button>
+          </div>
+          <div class="gfx-desc" id="gfx-preset-desc">7 lớp Parallax, 150 hạt vật lý, khăn Verlet 12 đốt, Rim-Light & Screen Shake (DPR 1.5x).</div>
+        </div>
         <div class="menu-actions">
           <button class="btn btn-neon-pink" id="btn-start-game">▶ BẮT ĐẦU PHIÊU LƯU</button>
           <div class="menu-grid-2">
             <button class="btn btn-neon-cyan" id="btn-open-worldmap">🗺 Bản Đồ (20 Chương)</button>
-            <button class="btn" id="btn-open-settings">⚙ Cài Đặt</button>
+            <button class="btn" id="btn-open-skins">✨ Tủ Skin (6 Mẫu)</button>
           </div>
+          <button class="btn" id="btn-open-settings">⚙ Cài Đặt</button>
         </div>
         <div class="keybind-strip">
           Di chuyển: <span class="kbd">A</span><span class="kbd">D</span> / <span class="kbd">←</span><span class="kbd">→</span> •
@@ -1071,6 +1250,17 @@
           <button class="btn btn-sm" id="btn-close-worldmap">✕ Đóng</button>
         </div>
         <div class="world-grid" id="world-map-grid"></div>
+      </div>
+    </div>
+
+    <!-- SKIN WARDROBE OVERLAY (6 PROCEDURAL SKINS) -->
+    <div id="overlay-skins" class="screen-overlay hidden">
+      <div class="glass-card world-map-panel">
+        <div class="modal-head">
+          <h2>✨ Tủ Skin Nhân Vật (6 Phong Cách Procedural)</h2>
+          <button class="btn btn-sm" id="btn-close-skins">✕ Đóng</button>
+        </div>
+        <div class="skin-grid" id="skin-grid"></div>
       </div>
     </div>
 
@@ -2092,13 +2282,173 @@
       }
 
       // =======================================================================
+      // 2B. 5-LEVEL GRAPHICS MANAGER & FPS AUTO-SCALER (GraphicsManager)
+      // =======================================================================
+      class GraphicsManager {
+        constructor() {
+          this.order = ['potato', 'low', 'medium', 'high', 'ultra'];
+          this.presets = {
+            potato: {
+              id: 'potato', label: 'Rất Thấp (Potato)', dpr: 0.6, maxParticles: 0, maxSplatters: 0,
+              parallaxLayers: 0, weather: false, weatherScale: 0, postFX: false, godRays: false,
+              glow: false, waterReflection: false, afterimages: false, scarfNodes: 0, shake: false,
+              desc: 'Potato Mode 60FPS cho máy siêu yếu: tắt hạt, tắt Parallax, tắt ánh sáng, DPR 0.6x.'
+            },
+            low: {
+              id: 'low', label: 'Thấp (Low)', dpr: 0.8, maxParticles: 15, maxSplatters: 20,
+              parallaxLayers: 2, weather: false, weatherScale: 0, postFX: false, godRays: false,
+              glow: false, waterReflection: false, afterimages: false, scarfNodes: 6, shake: true,
+              desc: '2 lớp Parallax cơ bản, tối đa 15 hạt, tắt Post-Processing, DPR 0.8x.'
+            },
+            medium: {
+              id: 'medium', label: 'Trung Bình (Mobile)', dpr: 1.0, maxParticles: 50, maxSplatters: 60,
+              parallaxLayers: 4, weather: true, weatherScale: 0.4, postFX: false, godRays: false,
+              glow: false, waterReflection: false, afterimages: false, scarfNodes: 8, shake: true,
+              desc: 'Mặc định Mobile: 4 lớp Parallax, 50 hạt, bóng đổ & biểu cảm nhân vật, DPR 1.0x.'
+            },
+            high: {
+              id: 'high', label: 'Cao (PC)', dpr: Math.min(window.devicePixelRatio || 1, 1.5), maxParticles: 150, maxSplatters: 180,
+              parallaxLayers: 7, weather: true, weatherScale: 0.85, postFX: true, godRays: false,
+              glow: true, waterReflection: false, afterimages: true, scarfNodes: 12, shake: true,
+              desc: 'Mặc định PC: 7 lớp Parallax, thời tiết, 150 hạt, khăn Verlet 12 đốt, Rim-Light, DPR 1.5x.'
+            },
+            ultra: {
+              id: 'ultra', label: 'MAX (Ultra AAA)', dpr: window.devicePixelRatio || 1, maxParticles: 420, maxSplatters: 360,
+              parallaxLayers: 7, weather: true, weatherScale: 1.25, postFX: true, godRays: true,
+              glow: true, waterReflection: true, afterimages: true, scarfNodes: 12, shake: true,
+              desc: 'Ultra Cinematic AAA: DPR gốc 2K/4K, God Rays, phản chiếu mặt nước, 400+ hạt & đầy đủ hậu kỳ.'
+            }
+          };
+
+          // Auto-detect hardware on first launch: Medium for Mobile, High for Desktop
+          this.currentId = this._loadSavedPreset() || (IS_TOUCH_DEVICE ? 'medium' : 'high');
+
+          // FPS Monitor & Auto-Scaler state
+          this.fps = 60;
+          this._lowFpsSeconds = 0;
+          this._toastDismissed = false;
+          this._toastEl = document.getElementById('fps-toast');
+          this._toastMsg = document.getElementById('fps-toast-msg');
+          this._btnDowngrade = document.getElementById('btn-fps-downgrade');
+          this._btnDismiss = document.getElementById('btn-fps-dismiss');
+        }
+
+        _loadSavedPreset() {
+          try {
+            const v = localStorage.getItem('vanngan_gfx_preset_v1');
+            return (v && this.presets[v]) ? v : null;
+          } catch (e) {
+            return null;
+          }
+        }
+
+        savePreset() {
+          try {
+            localStorage.setItem('vanngan_gfx_preset_v1', this.currentId);
+          } catch (e) {}
+        }
+
+        get config() {
+          return this.presets[this.currentId] || this.presets.high;
+        }
+
+        setPreset(presetId, core) {
+          if (!this.presets[presetId]) return;
+          this.currentId = presetId;
+          this._lowFpsSeconds = 0;
+          this.savePreset();
+          const cfg = this.config;
+
+          if (core) {
+            core.postFX.enabled = cfg.postFX;
+            core.postFX.godRaysEnabled = cfg.godRays;
+            core.postFX.parallaxLayers = cfg.parallaxLayers;
+            core.postFX.weatherEnabled = cfg.weather;
+            core.postFX.weatherScale = cfg.weatherScale;
+            core.particles.setBudget(cfg.maxParticles, cfg.maxSplatters, cfg.glow);
+            core.biomeRenderer.setQuality(cfg);
+            core.player.setQuality(cfg);
+            core._handleResize();
+          }
+          this.syncMenuUI();
+        }
+
+        getLowerPresetId() {
+          const idx = this.order.indexOf(this.currentId);
+          return idx > 0 ? this.order[idx - 1] : null;
+        }
+
+        syncMenuUI() {
+          const cfg = this.config;
+          const badge = document.getElementById('gfx-active-badge');
+          const desc = document.getElementById('gfx-preset-desc');
+          if (badge) badge.textContent = cfg.label.toUpperCase();
+          if (desc) desc.textContent = cfg.desc;
+          document.querySelectorAll('.gfx-pill-btn').forEach((btn) => {
+            btn.classList.toggle('active', btn.dataset.preset === this.currentId);
+          });
+        }
+
+        bindUI(core) {
+          document.querySelectorAll('.gfx-pill-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              if (navigator.vibrate) try { navigator.vibrate(12); } catch (e) {}
+              this.setPreset(btn.dataset.preset, core);
+            });
+          });
+          if (this._btnDowngrade) {
+            this._btnDowngrade.addEventListener('click', () => {
+              const lower = this.getLowerPresetId();
+              if (lower) this.setPreset(lower, core);
+              if (this._toastEl) this._toastEl.classList.add('hidden');
+            });
+          }
+          if (this._btnDismiss) {
+            this._btnDismiss.addEventListener('click', () => {
+              this._toastDismissed = true;
+              if (this._toastEl) this._toastEl.classList.add('hidden');
+            });
+          }
+          this.syncMenuUI();
+        }
+
+        monitorFPS(rawDt, isPlaying) {
+          if (!isPlaying || rawDt <= 0 || this._toastDismissed) return;
+          const instFps = 1 / rawDt;
+          this.fps = MathEx.lerp(this.fps, instFps, 0.12);
+          if (this.fps < 30 && this.getLowerPresetId()) {
+            this._lowFpsSeconds += rawDt;
+            if (this._lowFpsSeconds >= 3.0) {
+              const lower = this.presets[this.getLowerPresetId()];
+              if (this._toastMsg) {
+                this._toastMsg.textContent = `⚠ FPS (${Math.round(this.fps)}) tụt dưới 30! Đề xuất hạ xuống "${lower.label}" để chơi mượt 60FPS.`;
+              }
+              if (this._toastEl) this._toastEl.classList.remove('hidden');
+            }
+          } else {
+            this._lowFpsSeconds = Math.max(0, this._lowFpsSeconds - rawDt * 2);
+          }
+        }
+      }
+
+      // =======================================================================
       // 3. POST-PROCESSING, 6-LAYER PARALLAX & WEATHER (PostProcessing)
       // =======================================================================
       class PostProcessing {
         constructor() {
           this.enabled = true;
+          this.godRaysEnabled = false;
+          this.parallaxLayers = 7;
+          this.weatherEnabled = true;
+          this.weatherScale = 1.0;
           this.time = 0;
 
+          // Damped Harmonic Screen Shake & Hit-Stop Freeze Frame
+          this.hitStopTimer = 0;
+          this.shakeTime = 0;
+          this.shakeAmp = 0;
+          this.shakeDirX = 1;
+          this.shakeDirY = 0.6;
           // Multi-directional Trauma Screen Shake
           this.trauma = 0;
           this.shakeScale = 1.0;
@@ -2135,7 +2485,7 @@
           this.weatherType = type || 'acid_rain';
           this.weatherPool = [];
           const baseCount = type === 'acid_rain' ? 110 : type === 'blizzard' ? 95 : 65;
-          const count = IS_TOUCH_DEVICE ? Math.round(baseCount * 0.42) : baseCount;
+          const count = this.weatherEnabled ? Math.round(baseCount * (this.weatherScale || 1)) : 0;
           for (let i = 0; i < count; i++) {
             this.weatherPool.push(this._spawnWeatherDrop(viewW, viewH, true));
           }
@@ -2157,6 +2507,15 @@
 
         addShake(amount) {
           this.trauma = MathEx.clamp(this.trauma + amount, 0, 1);
+          this.shakeAmp = Math.max(this.shakeAmp, amount * 22);
+          this.shakeTime = 0;
+          const ang = Math.random() * Math.PI * 2;
+          this.shakeDirX = Math.cos(ang);
+          this.shakeDirY = Math.sin(ang);
+        }
+
+        triggerHitStop(duration = 0.4) {
+          this.hitStopTimer = Math.max(this.hitStopTimer, duration);
         }
 
         triggerChromatic(intensity = 12, duration = 0.38) {
@@ -2198,13 +2557,23 @@
             }
           }
 
-          // Multi-directional Trauma Shake
-          if (this.trauma > 0) {
+          // Hit-Stop timer tick
+          if (this.hitStopTimer > 0) {
+            this.hitStopTimer = Math.max(0, this.hitStopTimer - rawDt);
+          }
+
+          // Damped Harmonic Oscillator Camera Shake: A * e^(-decay*t) * cos(omega*t)
+          if (this.shakeAmp > 0.25 || this.trauma > 0) {
+            this.shakeTime += rawDt;
             this.trauma = Math.max(0, this.trauma - rawDt * 1.85);
-            const mag = this.trauma * this.trauma * this.shakeScale;
-            this.shakeOffsetX = (Math.random() * 2 - 1) * 26 * mag;
-            this.shakeOffsetY = (Math.random() * 2 - 1) * 22 * mag;
-            this.shakeRotation = (Math.random() * 2 - 1) * 0.032 * mag;
+            const decay = Math.exp(-6.5 * this.shakeTime);
+            const wave = Math.cos(44 * this.shakeTime);
+            const harmonic = this.shakeAmp * decay * wave * this.shakeScale;
+            const jitter = this.trauma * this.trauma * 8 * this.shakeScale;
+            this.shakeOffsetX = harmonic * this.shakeDirX + (Math.random() * 2 - 1) * jitter;
+            this.shakeOffsetY = harmonic * this.shakeDirY + (Math.random() * 2 - 1) * jitter;
+            this.shakeRotation = (harmonic * 0.0014) + (Math.random() * 2 - 1) * 0.012 * this.trauma;
+            if (this.shakeAmp * decay < 0.2) this.shakeAmp = 0;
           } else {
             this.shakeOffsetX = 0;
             this.shakeOffsetY = 0;
@@ -2264,6 +2633,13 @@
             rimColor: '#00f5ff'
           };
 
+          // POTATO MODE (0 Parallax Layers): Solid minimal dark sky for maximum 60FPS!
+          if (this.parallaxLayers === 0) {
+            ctx.fillStyle = palette.skyTop;
+            ctx.fillRect(0, 0, viewW, viewH);
+            return;
+          }
+
           // LAYER 1: Deep Atmospheric Sky & Celestial Core
           const skyGrad = ctx.createLinearGradient(0, 0, 0, viewH);
           skyGrad.addColorStop(0, palette.skyTop);
@@ -2271,6 +2647,7 @@
           skyGrad.addColorStop(1, palette.skyBot);
           ctx.fillStyle = skyGrad;
           ctx.fillRect(0, 0, viewW, viewH);
+          if (this.parallaxLayers <= 1) return;
 
           const sunX = viewW * 0.72 - camX * 0.025;
           const sunY = viewH * 0.24 - camY * 0.015;
@@ -2286,8 +2663,8 @@
           ctx.fill();
           ctx.restore();
 
-          // LAYER 2: Volumetric God Rays (Diagonal Light Shafts)
-          if (this.enabled) {
+          // LAYER 2: Volumetric God Rays (MAX Ultra Mode)
+          if (this.enabled && this.godRaysEnabled) {
             ctx.save();
             ctx.globalCompositeOperation = 'lighter';
             for (let r = 0; r < 5; r++) {
@@ -2360,8 +2737,8 @@
             ctx.fillRect(px, viewH - h, 36, h);
           }
 
-          // ANIME LAYER A: Twinkling Starfield & Shooting Stars (Phong cách Makoto Shinkai)
-          if (this.enabled) {
+          // ANIME LAYER A: Twinkling Starfield & Shooting Stars
+          if (this.enabled && this.parallaxLayers >= 4) {
             ctx.save();
             const starCount = IS_TOUCH_DEVICE ? 24 : 52;
             for (let st = 0; st < starCount; st++) {
@@ -2603,22 +2980,51 @@
       // =======================================================================
       class ParticleSystem {
         constructor(maxSplatters = 260) {
-          this.particles = [];
-          this.splatters = []; // Persistent blood / neon paint decals stuck on terrain!
+          this.poolCapacity = 450;
+          this._pool = new Array(this.poolCapacity);
+          for (let i = 0; i < this.poolCapacity; i++) {
+            this._pool[i] = { active: false, x: 0, y: 0, vx: 0, vy: 0, size: 3, color: '#fff', life: 0, maxLife: 1, gravity: 0, bounce: 0, stainTerrain: false, glow: false };
+          }
+          this.particles = []; // Active particle references (zero-allocation pooled!)
+          this.splatters = [];
           this.maxSplatters = IS_TOUCH_DEVICE ? Math.min(75, maxSplatters) : maxSplatters;
-          this.maxParticles = IS_TOUCH_DEVICE ? 85 : 280;
+          this.maxParticles = IS_TOUCH_DEVICE ? 50 : 150;
+          this.glowEnabled = !IS_TOUCH_DEVICE;
           this.floatingLabels = [];
+        }
+
+        setBudget(maxParticles, maxSplatters, glowEnabled) {
+          this.maxParticles = Math.min(this.poolCapacity, maxParticles);
+          this.maxSplatters = maxSplatters;
+          this.glowEnabled = !!glowEnabled;
+          if (this.maxParticles === 0) this.clearTransient();
+          if (this.splatters.length > this.maxSplatters) this.splatters.length = this.maxSplatters;
+        }
+
+        _acquireParticle(x, y, vx, vy, size, color, life, gravity, bounce, stainTerrain, glow) {
+          if (this.maxParticles <= 0 || this.particles.length >= this.maxParticles) return null;
+          for (let i = 0; i < this.poolCapacity; i++) {
+            const p = this._pool[i];
+            if (!p.active) {
+              p.active = true; p.x = x; p.y = y; p.vx = vx; p.vy = vy;
+              p.size = size; p.color = color; p.life = life; p.maxLife = life;
+              p.gravity = gravity; p.bounce = bounce; p.stainTerrain = stainTerrain; p.glow = glow;
+              this.particles.push(p);
+              return p;
+            }
+          }
+          return null;
         }
 
         clearTransient() {
-          this.particles = [];
-          this.floatingLabels = [];
+          for (let i = 0; i < this.particles.length; i++) this.particles[i].active = false;
+          this.particles.length = 0;
+          this.floatingLabels.length = 0;
         }
 
         clearAll() {
-          this.particles = [];
-          this.splatters = [];
-          this.floatingLabels = [];
+          this.clearTransient();
+          this.splatters.length = 0;
         }
 
         spawnLabel(x, y, text, color = '#ffffff') {
@@ -2674,28 +3080,45 @@
         }
 
         // Dramatic Character Explosion with Bouncing Debris & Persistent Terrain Splatters!
-        spawnGoreExplosion(x, y, primaryColor = '#ff1e7a') {
-          const palette = [primaryColor, '#ff2a4b', '#ff5e8e', '#ffffff', '#00f5ff'];
-          const count = IS_TOUCH_DEVICE ? 26 : 64;
+        spawnSurfaceLand(x, y, surfaceType, theme) {
+          const col = surfaceType === 'ice'
+            ? '#ccf8ff'
+            : (surfaceType === 'crumble' ? '#ffaa44' : ((theme && theme.blockTop) || '#dce6ff'));
+          const count = IS_TOUCH_DEVICE ? 5 : 10;
           for (let i = 0; i < count; i++) {
             if (this.particles.length >= this.maxParticles) break;
+            this.particles.push({
+              x: x + MathEx.rand(-11, 11),
+              y: y + MathEx.rand(-2, 2),
+              vx: MathEx.rand(-95, 95),
+              vy: MathEx.rand(-115, -25),
+              size: MathEx.rand(2, 4.5),
+              color: col,
+              life: MathEx.rand(0.24, 0.52),
+              maxLife: 0.52,
+              gravity: 320,
+              bounce: 0.35,
+              stainTerrain: false,
+              glow: surfaceType === 'ice'
+            });
+          }
+        }
+
+        spawnGoreExplosion(x, y, primaryColor = '#ff1e7a') {
+          if (this.maxParticles <= 0) return;
+          const palette = [primaryColor, '#ff2a4b', '#ff5e8e', '#ffffff', '#00f5ff', '#ffaa00'];
+          const count = Math.min(this.maxParticles, this.maxParticles >= 400 ? 110 : (this.maxParticles >= 120 ? 60 : 24));
+          for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
             const speed = MathEx.rand(70, 510);
             const isPaint = i % 3 !== 0;
-            this.particles.push({
-              x: x + MathEx.rand(-6, 6),
-              y: y + MathEx.rand(-6, 6),
-              vx: Math.cos(angle) * speed,
-              vy: Math.sin(angle) * speed - 110,
-              size: MathEx.rand(3.5, 9.5),
-              color: isPaint ? (i % 2 === 0 ? '#ff2a4b' : primaryColor) : MathEx.pick(palette),
-              life: MathEx.rand(0.75, 1.65),
-              maxLife: 1.65,
-              gravity: 1050,
-              bounce: 0.52,
-              stainTerrain: isPaint,
-              glow: !isPaint
-            });
+            this._acquireParticle(
+              x + MathEx.rand(-6, 6), y + MathEx.rand(-6, 6),
+              Math.cos(angle) * speed, Math.sin(angle) * speed - 110,
+              MathEx.rand(3.5, 9.5),
+              isPaint ? (i % 2 === 0 ? '#ff2a4b' : primaryColor) : MathEx.pick(palette),
+              MathEx.rand(0.75, 1.65), 1050, 0.52, isPaint, !isPaint
+            );
           }
         }
 
@@ -2711,7 +3134,9 @@
             const p = this.particles[i];
             p.life -= dt;
             if (p.life <= 0) {
-              this.particles.splice(i, 1);
+              p.active = false;
+              const last = this.particles.pop();
+              if (i < this.particles.length) this.particles[i] = last;
               continue;
             }
 
@@ -3046,8 +3471,17 @@
       // =======================================================================
       // 6. VERLET INTEGRATION ROPE PHYSICS & PLAYER ENTITY (PlayerEntity)
       // =======================================================================
+      const PLAYER_SKINS = [
+        { id: 'spirit', name: 'Linh Hồn Ánh Sáng', tag: 'Ori Radiant Core', emoji: '✨', core: '#ffffff', bodyTop: '#e8fbff', bodyBot: '#7be3ff', cloak1: '#00d9ff', cloak2: '#0066ff', scarf: '#00f5ff', scarfHi: '#ffffff', eye: '#ffffff', horns: 'ears' },
+        { id: 'cyberpunk', name: 'Chiến Binh Cyberpunk', tag: 'Neon Circuit Visor', emoji: '🤖', core: '#00f5ff', bodyTop: '#1f2942', bodyBot: '#0d1324', cloak1: '#ff1e7a', cloak2: '#6b124d', scarf: '#ff1e7a', scarfHi: '#00f5ff', eye: '#00f5ff', horns: 'visor' },
+        { id: 'void', name: 'Bóng Ma Hư Không', tag: 'Abyssal Pale Mask', emoji: '👻', core: '#c77dff', bodyTop: '#f5f2ff', bodyBot: '#c7c2db', cloak1: '#1a102b', cloak2: '#090412', scarf: '#7b2cbf', scarfHi: '#e0aaff', eye: '#140826', horns: 'void' },
+        { id: 'magma', name: 'Hiệp Sĩ Dung Nham', tag: 'Obsidian Molten Core', emoji: '🔥', core: '#ffaa00', bodyTop: '#362222', bodyBot: '#1a0c0c', cloak1: '#ff4d29', cloak2: '#8a120a', scarf: '#ff6a00', scarfHi: '#ffe066', eye: '#ffdd44', horns: 'knight' },
+        { id: 'glitch', name: 'Thực Thể Glitch', tag: 'Chromatic System Error', emoji: '⚡', core: '#39ff88', bodyTop: '#181828', bodyBot: '#090912', cloak1: '#39ff88', cloak2: '#ff1e7a', scarf: '#00f5ff', scarfHi: '#ff1e7a', eye: '#39ff88', horns: 'glitch' },
+        { id: 'golden_king', name: 'Vua Hoàng Kim', tag: 'Royal Crown & Starlight', emoji: '👑', core: '#fff5ba', bodyTop: '#ffe066', bodyBot: '#d97706', cloak1: '#f59e0b', cloak2: '#92400e', scarf: '#ffd166', scarfHi: '#ffffff', eye: '#ffffff', horns: 'crown' }
+      ];
+
       class VerletScarf {
-        constructor(nodeCount = 10, segmentLength = 5.2) {
+        constructor(nodeCount = 12, segmentLength = 4.4) {
           this.nodeCount = nodeCount;
           this.segmentLength = segmentLength;
           this.nodes = [];
@@ -3139,7 +3573,7 @@
             ctx.lineTo(b.x, b.y);
             ctx.stroke();
 
-            // Rim lighting highlight along upper half
+            // Rim lighting highlight + glowing geometric rune pattern along scarf
             if (i < this.nodes.length - 2) {
               ctx.strokeStyle = colorHighlight;
               ctx.lineWidth = Math.max(0.8, 1.8 * t * scale);
@@ -3147,6 +3581,12 @@
               ctx.moveTo(a.x, a.y - 1.2 * scale);
               ctx.lineTo(b.x, b.y - 1.2 * scale);
               ctx.stroke();
+              if (i % 2 === 1) {
+                ctx.fillStyle = colorHighlight;
+                ctx.beginPath();
+                ctx.arc((a.x + b.x) * 0.5, (a.y + b.y) * 0.5, Math.max(1.2, 2.2 * t * scale), 0, Math.PI * 2);
+                ctx.fill();
+              }
             }
           }
           ctx.restore();
@@ -3159,8 +3599,21 @@
           this.baseH = 36;
           this.spawnX = x;
           this.spawnY = y;
-          this.scarf = new VerletScarf(10, 5.2);
+          this.scarf = new VerletScarf(12, 4.4);
+          this.skinId = 'spirit';
+          this.afterimages = [];
+          this._ghostTimer = 0;
+          this.allowAfterimages = true;
+          this.allowGlow = true;
+          this.allowScarf = true;
           this.reset(x, y);
+        }
+
+        setQuality(cfg) {
+          this.allowAfterimages = !!cfg.afterimages;
+          this.allowGlow = !!cfg.glow;
+          this.allowScarf = cfg.scarfNodes > 0;
+          if (!this.allowAfterimages) this.afterimages.length = 0;
         }
 
         reset(x, y) {
@@ -3205,6 +3658,7 @@
           this.panicTimer = 0;
           this.sweatDrops = [];
           this.steamPuffs = [];
+          this.afterimages = [];
 
           // 3.5-Second Position History Ring Buffer (for Time Rewind Trap #16)
           this.history = [];
@@ -3447,6 +3901,18 @@
             if (st.life <= 0) this.steamPuffs.splice(i, 1);
           }
 
+          // Record Ghosting Afterimages during Dash or High-Speed Fall!
+          this._ghostTimer = (this._ghostTimer || 0) - dt;
+          if (this.allowAfterimages && (Math.abs(this.vx) > 315 || Math.abs(this.vy) > 460) && this._ghostTimer <= 0) {
+            this._ghostTimer = 0.045;
+            this.afterimages.push({ x: this.x, y: this.y, w: this.w, h: this.h, facing: this.facing, life: 0.26, maxLife: 0.26 });
+            if (this.afterimages.length > 8) this.afterimages.shift();
+          }
+          for (let i = this.afterimages.length - 1; i >= 0; i--) {
+            this.afterimages[i].life -= dt;
+            if (this.afterimages[i].life <= 0) this.afterimages.splice(i, 1);
+          }
+
           // Update Verlet Integration Scarf
           const scaleMult = this.sizeMode === 'giant' ? 1.85 : (this.sizeMode === 'tiny' ? 0.55 : 1.0);
           const neckX = this.x + this.w * 0.5 - this.facing * (this.w * 0.2);
@@ -3456,74 +3922,147 @@
           return stepResult;
         }
 
-        render(ctx, levelDeaths = 0, nearestDanger = null) {
+        render(ctx, levelDeaths = 0, nearestDanger = null, biomeRimColor = '#00f5ff') {
           if (this.dead) return;
 
+          const skin = PLAYER_SKINS.find((sk) => sk.id === this.skinId) || PLAYER_SKINS[0];
           const emotion = this.getEmotionalState(levelDeaths);
           const scaleMult = this.sizeMode === 'giant' ? 1.85 : (this.sizeMode === 'tiny' ? 0.55 : 1.0);
           const cx = this.x + this.w * 0.5;
           const cy = this.y + this.h * 0.5;
 
-          // 1. Render Verlet Physics Scarf behind hero
-          const scarfColor = this.reversedTimer > 0
-            ? '#ffaa00'
-            : (emotion === 'furious' ? '#ff2a4b' : '#ff1e7a');
-          this.scarf.render(ctx, scarfColor, '#ffc2dc', scaleMult);
+          // 0. Render Motion Trail / Ghosting Afterimages (Dash & High-Speed Fall)
+          for (let i = 0; i < this.afterimages.length; i++) {
+            const g = this.afterimages[i];
+            const alpha = (g.life / g.maxLife) * 0.36;
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = skin.scarf;
+            ctx.beginPath();
+            ctx.roundRect(g.x, g.y, g.w, g.h - 4, 9);
+            ctx.fill();
+            ctx.restore();
+          }
 
-          // 2. Transform for Squash & Stretch + Gravity Inversion
+          // 1. Volumetric Inner Core Glow around Hero (Ori-style additive radial light)
           ctx.save();
-          ctx.translate(cx, this.gravityDir > 0 ? this.y + this.h : this.y);
-          ctx.scale(this.scaleX, this.scaleY * this.gravityDir);
+          ctx.globalCompositeOperation = 'lighter';
+          const haloR = (this.sizeMode === 'giant' ? 95 : 58);
+          const haloGrad = ctx.createRadialGradient(cx, cy, 4, cx, cy, haloR);
+          haloGrad.addColorStop(0, emotion === 'furious' ? 'rgba(255, 42, 75, 0.38)' : 'rgba(255, 255, 255, 0.22)');
+          haloGrad.addColorStop(0.45, emotion === 'furious' ? 'rgba(255, 42, 75, 0.14)' : 'rgba(0, 245, 255, 0.12)');
+          haloGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          ctx.fillStyle = haloGrad;
+          ctx.beginPath();
+          ctx.arc(cx, cy, haloR, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          // 2. Render Verlet Physics Scarf (skipped in Potato Mode)
+          if (this.allowScarf) {
+          const scarfColor = this.reversedTimer > 0 ? '#ffaa00' : (emotion === 'furious' ? '#ff2a4b' : skin.scarf);
+          this.scarf.render(ctx, scarfColor, skin.scarfHi, scaleMult);
+          }
+
+          // 3. Transform for Idle Breathing, Velocity Lean, Squash & Stretch + Gravity Inversion
+          ctx.save();
+          const idleBreath = (this.onGround && Math.abs(this.vx) < 15) ? Math.sin(this.animTime * 3.4) * 0.032 : 0;
+          const velLean = MathEx.clamp(this.vx / 1450, -0.18, 0.18) * this.gravityDir;
+          const glitchShift = (skin.id === 'glitch' && Math.sin(this.animTime * 40) > 0.72) ? MathEx.rand(-2.5, 2.5) : 0;
+
+          ctx.translate(cx + glitchShift, this.gravityDir > 0 ? this.y + this.h : this.y);
+          ctx.rotate(velLean);
+          ctx.scale(this.scaleX * (1 - idleBreath), this.scaleY * (1 + idleBreath) * this.gravityDir);
 
           const drawW = this.crouching ? this.w * 1.14 : this.w;
           const drawH = this.crouching ? this.h * 0.76 : this.h;
 
-          // Animated running feet
-          const stride = (this.onGround && Math.abs(this.vx) > 20)
-            ? Math.sin(this.animTime * 20) * (5 * scaleMult)
-            : 0;
-          ctx.fillStyle = '#0d1224';
+          // Animated feet
+          const stride = (this.onGround && Math.abs(this.vx) > 20) ? Math.sin(this.animTime * 20) * (5 * scaleMult) : 0;
+          ctx.fillStyle = '#0c1021';
           ctx.beginPath();
           ctx.roundRect(-drawW * 0.36 + stride, -7 * scaleMult, drawW * 0.28, 7 * scaleMult, 3);
           ctx.roundRect(drawW * 0.08 - stride, -7 * scaleMult, drawW * 0.28, 7 * scaleMult, 3);
           ctx.fill();
 
-          // Hero Capsule Body with Rim Lighting & Furious Red Flush
+          // Outer Dynamic Gradient Cloak (Layer 1 of 2-layer cloak)
+          const cloakSway = Math.sin(this.animTime * 8) * 3 - this.facing * 4;
+          const cloakGrad = ctx.createLinearGradient(0, -drawH * 0.7, 0, -4);
+          cloakGrad.addColorStop(0, skin.cloak1);
+          cloakGrad.addColorStop(1, skin.cloak2);
+          ctx.fillStyle = cloakGrad;
+          ctx.beginPath();
+          ctx.moveTo(-drawW * 0.48, -drawH * 0.65);
+          ctx.lineTo(drawW * 0.48, -drawH * 0.65);
+          ctx.lineTo(drawW * 0.60 + cloakSway * 0.4, -5 * scaleMult);
+          ctx.lineTo(-drawW * 0.60 + cloakSway * 0.4, -5 * scaleMult);
+          ctx.closePath();
+          ctx.fill();
+
+          // Main Inner Tunic / Core Body (Layer 2) with Rim-Light matching Biome Light Source!
           const bodyGrad = ctx.createLinearGradient(0, -drawH, 0, -4);
           if (emotion === 'furious') {
             bodyGrad.addColorStop(0, '#ffd4dc');
-            bodyGrad.addColorStop(1, '#ff4d6d');
+            bodyGrad.addColorStop(1, '#ff3355');
           } else {
-            bodyGrad.addColorStop(0, '#ffffff');
-            bodyGrad.addColorStop(1, '#c7d9ff');
+            bodyGrad.addColorStop(0, skin.bodyTop);
+            bodyGrad.addColorStop(1, skin.bodyBot);
           }
 
-          const outlineColor = emotion === 'furious'
-            ? '#ff2a4b'
-            : (this.reversedTimer > 0 ? '#ffaa00' : '#00f5ff');
-
+          const rimCol = emotion === 'furious' ? '#ff2a4b' : (biomeRimColor || skin.scarf);
           ctx.fillStyle = bodyGrad;
-          ctx.strokeStyle = outlineColor;
+          ctx.strokeStyle = rimCol;
           ctx.lineWidth = 2.2;
-          ctx.shadowColor = outlineColor;
-          ctx.shadowBlur = emotion === 'furious' ? 16 : 8;
           ctx.beginPath();
-          ctx.roundRect(-drawW * 0.5, -drawH, drawW, drawH - 5 * scaleMult, 9 * scaleMult);
+          ctx.roundRect(-drawW * 0.48, -drawH, drawW * 0.96, drawH - 6 * scaleMult, 10 * scaleMult);
           ctx.fill();
           ctx.stroke();
-          ctx.shadowBlur = 0;
 
-          // Visor Faceplate
+          // Skin-Specific Headgear / Silhouette (Spirit Ears, Void Horns, Golden Crown, Knight Crest)
+          if (skin.horns === 'ears') {
+            ctx.fillStyle = skin.bodyTop;
+            ctx.beginPath();
+            ctx.ellipse(-drawW * 0.28, -drawH - 4 * scaleMult, 3.5 * scaleMult, 8 * scaleMult, -0.35, 0, Math.PI * 2);
+            ctx.ellipse(drawW * 0.28, -drawH - 4 * scaleMult, 3.5 * scaleMult, 8 * scaleMult, 0.35, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (skin.horns === 'void') {
+            ctx.fillStyle = '#f5f2ff';
+            ctx.beginPath();
+            ctx.moveTo(-drawW * 0.36, -drawH + 2);
+            ctx.lineTo(-drawW * 0.44, -drawH - 11 * scaleMult);
+            ctx.lineTo(-drawW * 0.14, -drawH + 1);
+            ctx.moveTo(drawW * 0.36, -drawH + 2);
+            ctx.lineTo(drawW * 0.44, -drawH - 11 * scaleMult);
+            ctx.lineTo(drawW * 0.14, -drawH + 1);
+            ctx.fill();
+          } else if (skin.horns === 'crown') {
+            ctx.fillStyle = '#ffd166';
+            ctx.strokeStyle = '#fff5ba';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(-drawW * 0.35, -drawH - 1);
+            ctx.lineTo(-drawW * 0.38, -drawH - 11 * scaleMult);
+            ctx.lineTo(-drawW * 0.12, -drawH - 5 * scaleMult);
+            ctx.lineTo(0, -drawH - 13 * scaleMult);
+            ctx.lineTo(drawW * 0.12, -drawH - 5 * scaleMult);
+            ctx.lineTo(drawW * 0.38, -drawH - 11 * scaleMult);
+            ctx.lineTo(drawW * 0.35, -drawH - 1);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          }
+
+          // Visor / Face Mask
           const faceShiftX = this.facing * (drawW * 0.10);
           const visorY = -drawH * 0.74;
           const visorW = drawW * 0.74;
           const visorH = drawH * 0.38;
-          ctx.fillStyle = '#0f1428';
+          ctx.fillStyle = skin.id === 'void' ? '#f5f2ff' : '#0d1226';
           ctx.beginPath();
           ctx.roundRect(-visorW * 0.5 + faceShiftX, visorY, visorW, visorH, 6 * scaleMult);
           ctx.fill();
 
-          // Smart Eye Tracking toward Nearest Danger!
+          // Smart Eye Tracking + Wind Squint + Freefall Wide Eyes + Furious Sparks
           let lookX = this.facing * 1.4;
           let lookY = 0;
           if (nearestDanger) {
@@ -3537,90 +4076,52 @@
           const eyeY = visorY + visorH * 0.45 + lookY;
           const lEyeX = -visorW * 0.21 + faceShiftX + lookX;
           const rEyeX = visorW * 0.21 + faceShiftX + lookX;
-          const eyeColor = emotion === 'furious'
-            ? '#ff2a4b'
-            : (emotion === 'panicked' ? '#ffdf5e' : '#00f5ff');
+          const eyeColor = emotion === 'furious' ? '#ff2a4b' : (emotion === 'panicked' ? '#ffdf5e' : skin.eye);
+          const squintingWind = Math.abs(this.windX) > 100 && emotion !== 'panicked';
+          const freefalling = this.vy > 420;
 
           ctx.fillStyle = eyeColor;
-          ctx.shadowColor = eyeColor;
-          ctx.shadowBlur = 8;
-
-          if (this.isBlinking && emotion === 'confident') {
-            ctx.fillRect(lEyeX - 3 * scaleMult, eyeY, 6 * scaleMult, 2 * scaleMult);
-            ctx.fillRect(rEyeX - 3 * scaleMult, eyeY, 6 * scaleMult, 2 * scaleMult);
-          } else if (emotion === 'panicked') {
+          if ((this.isBlinking && emotion === 'confident') || squintingWind) {
+            ctx.fillRect(lEyeX - 3.2 * scaleMult, eyeY, 6.4 * scaleMult, 2 * scaleMult);
+            ctx.fillRect(rEyeX - 3.2 * scaleMult, eyeY, 6.4 * scaleMult, 2 * scaleMult);
+          } else if (emotion === 'panicked' || freefalling) {
             const jx = Math.sin(this.animTime * 52) * 1.1;
-            const rad = 3.6 * scaleMult;
+            const rad = 3.8 * scaleMult;
             ctx.beginPath();
             ctx.arc(lEyeX + jx, eyeY, rad, 0, Math.PI * 2);
             ctx.arc(rEyeX + jx, eyeY, rad, 0, Math.PI * 2);
             ctx.fill();
-            ctx.fillStyle = '#0a0e1f';
+            ctx.fillStyle = '#090d1c';
             ctx.beginPath();
             ctx.arc(lEyeX + jx, eyeY, rad * 0.42, 0, Math.PI * 2);
             ctx.arc(rEyeX + jx, eyeY, rad * 0.42, 0, Math.PI * 2);
             ctx.fill();
-          } else if (emotion === 'furious') {
-            // Twitching furious eyes + furrowed glowing brows
-            const twitch = Math.sin(this.animTime * 68) > 0.65 ? 1.5 : 0;
-            ctx.beginPath();
-            ctx.arc(lEyeX, eyeY + twitch, 2.8 * scaleMult, 0, Math.PI * 2);
-            ctx.arc(rEyeX, eyeY - twitch, 2.8 * scaleMult, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#ff2a4b';
-            ctx.lineWidth = 2.2 * scaleMult;
-            ctx.beginPath();
-            ctx.moveTo(lEyeX - 4.5 * scaleMult, eyeY - 5 * scaleMult);
-            ctx.lineTo(lEyeX + 3.5 * scaleMult, eyeY - 1.5 * scaleMult);
-            ctx.moveTo(rEyeX + 4.5 * scaleMult, eyeY - 5 * scaleMult);
-            ctx.lineTo(rEyeX - 3.5 * scaleMult, eyeY - 1.5 * scaleMult);
-            ctx.stroke();
           } else {
             ctx.beginPath();
-            ctx.arc(lEyeX, eyeY, 2.6 * scaleMult, 0, Math.PI * 2);
-            ctx.arc(rEyeX, eyeY, 2.6 * scaleMult, 0, Math.PI * 2);
+            ctx.arc(lEyeX, eyeY, 2.8 * scaleMult, 0, Math.PI * 2);
+            ctx.arc(rEyeX, eyeY, 2.8 * scaleMult, 0, Math.PI * 2);
             ctx.fill();
           }
 
-          // Expressive Mouth
-          ctx.shadowBlur = 0;
-          ctx.strokeStyle = eyeColor;
-          ctx.lineWidth = 1.6 * scaleMult;
-          const mouthY = visorY + visorH * 0.80;
-          ctx.beginPath();
-          if (emotion === 'confident') {
-            ctx.arc(faceShiftX, mouthY - 2 * scaleMult, 3.8 * scaleMult, 0.15 * Math.PI, 0.85 * Math.PI);
-          } else if (emotion === 'panicked') {
-            ctx.ellipse(faceShiftX, mouthY - 1 * scaleMult, 3.2 * scaleMult, 4.0 * scaleMult, 0, 0, Math.PI * 2);
-          } else {
-            // Gritted angry teeth line
-            ctx.moveTo(faceShiftX - 5 * scaleMult, mouthY);
-            ctx.lineTo(faceShiftX + 5 * scaleMult, mouthY);
-          }
-          ctx.stroke();
-
-          // Render Sweat Drops (6-15 deaths)
+          // Sweat drops (6-15 deaths) & Black Fury Smoke + Electric Sparks (>15 deaths)
           for (let i = 0; i < this.sweatDrops.length; i++) {
-            const s = this.sweatDrops[i];
+            const sw = this.sweatDrops[i];
             ctx.fillStyle = '#7bf5ff';
             ctx.beginPath();
-            ctx.arc(s.x, s.y, 2.4 * scaleMult, 0, Math.PI * 2);
+            ctx.arc(sw.x, sw.y, 2.3 * scaleMult, 0, Math.PI * 2);
             ctx.fill();
           }
-
-          // Render Fury Steam Puffs (>15 deaths)
           for (let i = 0; i < this.steamPuffs.length; i++) {
             const st = this.steamPuffs[i];
             ctx.save();
-            ctx.globalAlpha = MathEx.clamp(st.life / 0.65, 0, 0.75);
-            ctx.fillStyle = '#ffccd5';
+            ctx.globalAlpha = MathEx.clamp(st.life / 0.65, 0, 0.78);
+            ctx.fillStyle = i % 3 === 0 ? '#ff3355' : '#261424';
             ctx.beginPath();
             ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
             ctx.fill();
             ctx.restore();
           }
 
-          // Render Frozen Ice Encasement Overlay
           if (this.frozenTimer > 0) {
             ctx.fillStyle = 'rgba(120, 235, 255, 0.42)';
             ctx.strokeStyle = '#ffffff';
@@ -3628,8 +4129,6 @@
             ctx.fillRect(-drawW * 0.62, -drawH - 4, drawW * 1.24, drawH + 6);
             ctx.strokeRect(-drawW * 0.62, -drawH - 4, drawW * 1.24, drawH + 6);
           }
-
-          // Render Sticky Glue Puddle around Feet
           if (this.gluedTimer > 0) {
             ctx.fillStyle = 'rgba(186, 255, 41, 0.78)';
             ctx.beginPath();
@@ -6363,6 +6862,317 @@
         }
       }
 
+
+      // =======================================================================
+      // 11B. INDIE AAA PROCEDURAL ENVIRONMENT & LIGHTING RENDERER (BiomeRenderer)
+      // =======================================================================
+      class BiomeRenderer {
+        constructor() {
+          this.time = 0;
+          this.spores = [];    // Interactive glowing fireflies/spores that scatter when player runs past!
+          this.lanterns = [];  // Swinging pendulum lanterns along platforms!
+          this.fgProps = [];
+          this.quality = { parallaxLayers: 7, glow: true, waterReflection: true };
+        }
+
+        setQuality(cfg) {
+          this.quality = cfg;
+        }
+
+        initForLevel(level, viewW, viewH) {
+          this.spores = [];
+          this.lanterns = [];
+          this.fgProps = [];
+          if (!level) return;
+
+          // Populate interactive spores/fireflies across level
+          const sporeCount = IS_TOUCH_DEVICE ? 24 : 56;
+          for (let i = 0; i < sporeCount; i++) {
+            this.spores.push({
+              x: Math.random() * level.width,
+              y: MathEx.rand(120, Math.min(level.height - 80, 680)),
+              vx: MathEx.rand(-12, 12),
+              vy: MathEx.rand(-10, 10),
+              r: MathEx.rand(1.8, 3.8),
+              phase: Math.random() * Math.PI * 2
+            });
+          }
+
+          // Place swinging lanterns every ~480px along solid platforms
+          for (let i = 0; i < level.solids.length; i++) {
+            const b = level.solids[i];
+            if (b.type === 'solid' && b.w >= 240 && i % 2 === 0) {
+              this.lanterns.push({
+                x: b.x + b.w * 0.5,
+                y: b.y,
+                angle: 0,
+                angVel: 0
+              });
+            }
+          }
+
+          // Layer 7 Foreground Depth-of-Field Bokeh & Branches
+          const fgCount = IS_TOUCH_DEVICE ? 8 : 16;
+          for (let i = 0; i < fgCount; i++) {
+            this.fgProps.push({
+              x: i * 320 + MathEx.rand(0, 140),
+              y: MathEx.rand(40, viewH - 40),
+              r: MathEx.rand(18, 52),
+              isBranch: i % 3 === 0
+            });
+          }
+        }
+
+        update(dt, player) {
+          this.time += dt;
+          const px = player.x + player.w * 0.5;
+          const py = player.y + player.h * 0.5;
+
+          // Interactive Fireflies/Spores scatter dynamically away from running player!
+          for (let i = 0; i < this.spores.length; i++) {
+            const sp = this.spores[i];
+            const dx = sp.x - px;
+            const dy = sp.y - py;
+            const d2 = dx * dx + dy * dy;
+            if (d2 < 8500 && d2 > 1) {
+              const d = Math.sqrt(d2);
+              const push = (1 - d / 92) * 320;
+              sp.vx += (dx / d) * push * dt;
+              sp.vy += (dy / d) * push * dt;
+            }
+            sp.vx *= 0.96;
+            sp.vy *= 0.96;
+            sp.x += (sp.vx + Math.sin(this.time * 1.4 + sp.phase) * 14) * dt;
+            sp.y += (sp.vy + Math.cos(this.time * 1.1 + sp.phase) * 10) * dt;
+          }
+
+          // Pendulum Physics for Hanging Lanterns when Player brushes past!
+          for (let i = 0; i < this.lanterns.length; i++) {
+            const l = this.lanterns[i];
+            if (Math.abs(px - l.x) < 34 && Math.abs(py - (l.y - 36)) < 44) {
+              l.angVel += MathEx.clamp(player.vx * 0.015, -4, 4) * dt * 18;
+            }
+            const angAccel = -16 * Math.sin(l.angle) - 2.4 * l.angVel;
+            l.angVel += angAccel * dt;
+            l.angle += l.angVel * dt;
+          }
+        }
+
+        // Layer 5: Rich Procedural Platforms (Grass/Snow/Moss/Circuits + Hanging Roots/Stalactites + Cracks)
+        renderPlatforms(ctx, level, camX, viewW) {
+          const th = level.theme;
+          const isSnow = level.weather === 'blizzard';
+          const isCyber = level.weather === 'acid_rain' || level.weather === 'cyber_glitch';
+          const minX = camX - 120;
+          const maxX = camX + viewW + 120;
+
+          for (let i = 0; i < level.solids.length; i++) {
+            const b = level.solids[i];
+            if (b.broken || (b.type === 'invis_block' && !b.revealed)) continue;
+            if (b.x + b.w < minX || b.x > maxX) continue;
+
+            if (b.type === 'ice') {
+              const ig = ctx.createLinearGradient(b.x, b.y, b.x, b.y + b.h);
+              ig.addColorStop(0, '#e6fbff');
+              ig.addColorStop(0.25, '#5bd6ff');
+              ig.addColorStop(1, '#144c75');
+              ctx.fillStyle = ig;
+              ctx.fillRect(b.x, b.y, b.w, b.h);
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(b.x, b.y, b.w, 4);
+              continue;
+            }
+            if (b.type === 'crumble') {
+              ctx.fillStyle = '#4a2538';
+              ctx.fillRect(b.x, b.y, b.w, b.h);
+              ctx.strokeStyle = '#ffaa00';
+              ctx.strokeRect(b.x, b.y, b.w, b.h);
+              continue;
+            }
+            if (b.type === 'invis_block') {
+              ctx.fillStyle = '#ffaa00';
+              ctx.fillRect(b.x, b.y, b.w, b.h);
+              continue;
+            }
+
+            // Rich Gradient Platform Core
+            const pGrad = ctx.createLinearGradient(b.x, b.y, b.x, b.y + Math.min(b.h, 140));
+            pGrad.addColorStop(0, th.blockFill || '#1a1530');
+            pGrad.addColorStop(1, '#06070f');
+            ctx.fillStyle = pGrad;
+            ctx.fillRect(b.x, b.y, b.w, b.h);
+
+            // Top Rim-Light Cap (Snow / Grass / Glowing Circuit)
+            ctx.fillStyle = th.blockTop || '#00f5ff';
+            ctx.fillRect(b.x, b.y, b.w, 5);
+
+            // Surface Details: Swaying Grass Blades OR Glowing Neon Circuit Traces
+            if (!IS_TOUCH_DEVICE && b.w >= 80) {
+              if (isCyber) {
+                ctx.strokeStyle = th.rimColor || '#00f5ff';
+                ctx.globalAlpha = 0.25;
+                ctx.lineWidth = 1.4;
+                for (let cx = b.x + 18; cx < b.x + b.w - 18; cx += 44) {
+                  ctx.beginPath();
+                  ctx.moveTo(cx, b.y + 8);
+                  ctx.lineTo(cx, b.y + 22);
+                  ctx.lineTo(cx + 14, b.y + 32);
+                  ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
+              } else if (!isSnow) {
+                ctx.strokeStyle = th.blockTop || '#39ff88';
+                ctx.lineWidth = 1.6;
+                const sway = Math.sin(this.time * 3.2) * 3;
+                for (let gx = b.x + 8; gx < b.x + b.w - 8; gx += 18) {
+                  ctx.beginPath();
+                  ctx.moveTo(gx, b.y);
+                  ctx.lineTo(gx + sway, b.y - 6);
+                  ctx.stroke();
+                }
+              }
+
+              // Hanging Roots / Icicles underneath elevated thin platforms
+              if (b.h <= 85) {
+                ctx.fillStyle = isSnow ? '#9ef0ff' : (th.blockStroke || '#ff1e7a');
+                ctx.globalAlpha = 0.45;
+                for (let rx = b.x + 14; rx < b.x + b.w - 14; rx += 32) {
+                  const len = 8 + ((rx * 7) % 14);
+                  ctx.beginPath();
+                  ctx.moveTo(rx - 3, b.y + b.h);
+                  ctx.lineTo(rx, b.y + b.h + len);
+                  ctx.lineTo(rx + 3, b.y + b.h);
+                  ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+              }
+            }
+
+            ctx.strokeStyle = th.blockStroke || '#ff1e7a';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1);
+          }
+        }
+
+        // Interactive Swinging Lanterns + Glowing Spores + Reflective Horizon Water/Lava
+        renderInteractiveEcology(ctx, level, player, camX, viewW) {
+          const th = level.theme;
+
+          // 1. Swinging Lantern Posts with Additive Radial Glow
+          for (let i = 0; i < this.lanterns.length; i++) {
+            const l = this.lanterns[i];
+            if (l.x < camX - 100 || l.x > camX + viewW + 100) continue;
+            const lx = l.x + Math.sin(l.angle) * 16;
+            const ly = l.y - 46 + Math.cos(l.angle) * 12;
+
+            ctx.save();
+            ctx.strokeStyle = '#8fa3c7';
+            ctx.lineWidth = 2.2;
+            ctx.beginPath();
+            ctx.moveTo(l.x, l.y);
+            ctx.lineTo(l.x, l.y - 48);
+            ctx.lineTo(lx, ly);
+            ctx.stroke();
+
+            ctx.fillStyle = th.sunColor || '#ffaa00';
+            ctx.beginPath();
+            ctx.arc(lx, ly, 4.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.globalCompositeOperation = 'lighter';
+            const lg = ctx.createRadialGradient(lx, ly, 2, lx, ly, 46);
+            lg.addColorStop(0, 'rgba(255, 220, 140, 0.42)');
+            lg.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = lg;
+            ctx.beginPath();
+            ctx.arc(lx, ly, 46, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+
+          // 2. Interactive Glowing Fireflies / Spores
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          for (let i = 0; i < this.spores.length; i++) {
+            const sp = this.spores[i];
+            if (sp.x < camX - 40 || sp.x > camX + viewW + 40) continue;
+            const glow = 0.45 + 0.55 * Math.sin(this.time * 4 + sp.phase);
+            ctx.globalAlpha = glow * 0.85;
+            ctx.fillStyle = i % 2 === 0 ? (th.rimColor || '#00f5ff') : (th.sunColor || '#ffe066');
+            ctx.beginPath();
+            ctx.arc(sp.x, sp.y, sp.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+
+          // 3. Reflective Horizon Water / Lava Shimmer (enabled on High/Ultra)
+          if (!level.isVerticalClimb && this.quality.waterReflection) {
+            const waterY = level.height - 68;
+            ctx.save();
+            const wg = ctx.createLinearGradient(0, waterY, 0, level.height);
+            wg.addColorStop(0, th.fogColor || 'rgba(0, 245, 255, 0.22)');
+            wg.addColorStop(1, 'rgba(4, 6, 16, 0.92)');
+            ctx.fillStyle = wg;
+            ctx.fillRect(camX - 40, waterY, viewW + 80, 110);
+
+            // Animated Water Ripples
+            ctx.strokeStyle = th.rimColor || '#00f5ff';
+            ctx.globalAlpha = 0.35;
+            ctx.lineWidth = 1.5;
+            for (let w = 0; w < 3; w++) {
+              ctx.beginPath();
+              for (let wx = camX - 20; wx < camX + viewW + 40; wx += 24) {
+                const wy = waterY + 6 + w * 12 + Math.sin(wx * 0.03 + this.time * 3.5 + w) * 3;
+                if (wx === camX - 20) ctx.moveTo(wx, wy);
+                else ctx.lineTo(wx, wy);
+              }
+              ctx.stroke();
+            }
+
+            // Inverted Player Reflection on Water Surface when close!
+            if (!player.dead && player.y > waterY - 220) {
+              ctx.globalAlpha = 0.22;
+              ctx.fillStyle = th.sunColor || '#ffffff';
+              const reflY = waterY + (waterY - (player.y + player.h)) * 0.35 + 14;
+              ctx.fillRect(player.x + Math.sin(this.time * 8) * 3, reflY, player.w, player.h * 0.55);
+            }
+            ctx.restore();
+          }
+        }
+
+        // Layer 7: Foreground Parallax Depth-of-Field Bokeh Lights & Silhouettes (1.42x speed!)
+        renderForegroundLayer7(ctx, camX, viewW, viewH, theme) {
+          ctx.save();
+          const span = 2200;
+          for (let i = 0; i < this.fgProps.length; i++) {
+            const fp = this.fgProps[i];
+            const sx = (((fp.x - camX * 1.42) % span) + span) % span - 140;
+            if (sx > viewW + 140) continue;
+
+            if (fp.isBranch) {
+              ctx.fillStyle = 'rgba(4, 5, 12, 0.45)';
+              ctx.beginPath();
+              ctx.moveTo(sx, viewH);
+              ctx.lineTo(sx + 16, viewH - 95);
+              ctx.lineTo(sx + 34, viewH);
+              ctx.fill();
+            } else {
+              ctx.globalCompositeOperation = 'lighter';
+              const bg = ctx.createRadialGradient(sx, fp.y, 2, sx, fp.y, fp.r);
+              bg.addColorStop(0, 'rgba(255, 255, 255, 0.14)');
+              bg.addColorStop(0.5, (theme && theme.fogColor) || 'rgba(0, 245, 255, 0.08)');
+              bg.addColorStop(1, 'rgba(0, 0, 0, 0)');
+              ctx.fillStyle = bg;
+              ctx.beginPath();
+              ctx.arc(sx, fp.y, fp.r, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.globalCompositeOperation = 'source-over';
+            }
+          }
+          ctx.restore();
+        }
+      }
+
       // =======================================================================
       // 12. UI, ECG TELEMETRY & WORLD MAP MANAGER (UIManager)
       // =======================================================================
@@ -6380,20 +7190,25 @@
             debuffStrip: document.getElementById('debuff-strip'),
             tauntPopup: document.getElementById('rage-taunt-popup'),
             tauntSub: document.getElementById('rage-taunt-sub'),
-            touchPad: document.getElementById('touch-pad'),
+            touchPad: document.getElementById('mobile-controls'),
 
             overlayMenu: document.getElementById('overlay-menu'),
             overlayWorldMap: document.getElementById('overlay-worldmap'),
             overlaySettings: document.getElementById('overlay-settings'),
+            overlaySkins: document.getElementById('overlay-skins'),
+            skinGrid: document.getElementById('skin-grid'),
             worldGrid: document.getElementById('world-map-grid'),
 
             btnStart: document.getElementById('btn-start-game'),
             btnWorldMap: document.getElementById('btn-open-worldmap'),
             btnSettings: document.getElementById('btn-open-settings'),
+            btnSkins: document.getElementById('btn-open-skins'),
+            btnCloseSkins: document.getElementById('btn-close-skins'),
             btnCloseMap: document.getElementById('btn-close-worldmap'),
             btnCloseSettings: document.getElementById('btn-close-settings'),
 
             btnHudRestart: document.getElementById('btn-hud-restart'),
+            btnHudGamepad: document.getElementById('btn-hud-gamepad'),
             btnHudMute: document.getElementById('btn-hud-mute'),
             btnHudMap: document.getElementById('btn-hud-map'),
             btnHudMenu: document.getElementById('btn-hud-menu'),
@@ -6463,6 +7278,12 @@
           if (this.dom.btnSettings) {
             this.dom.btnSettings.addEventListener('click', withAudio(() => this.openModal('settings')));
           }
+          if (this.dom.btnSkins) {
+            this.dom.btnSkins.addEventListener('click', withAudio(() => this.openModal('skins')));
+          }
+          if (this.dom.btnCloseSkins) {
+            this.dom.btnCloseSkins.addEventListener('click', () => this.closeModals());
+          }
           if (this.dom.btnCloseMap) {
             this.dom.btnCloseMap.addEventListener('click', () => this.closeModals());
           }
@@ -6472,6 +7293,16 @@
 
           if (this.dom.btnHudRestart) {
             this.dom.btnHudRestart.addEventListener('click', withAudio(() => this.core.respawnPlayer(true)));
+          }
+          if (this.dom.btnHudGamepad) {
+            this.dom.btnHudGamepad.addEventListener('click', () => {
+              if (navigator.vibrate) try { navigator.vibrate(15); } catch (e) {}
+              this.core.settings.showTouch = !this.core.settings.showTouch;
+              this.core.settings.touchPreferenceExplicit = true;
+              if (this.dom.optTouch) this.dom.optTouch.checked = this.core.settings.showTouch;
+              this.syncTouchPad();
+              this.core.saveProgress();
+            });
           }
           if (this.dom.btnHudMute) {
             this.dom.btnHudMute.addEventListener('click', withAudio(() => {
@@ -6550,6 +7381,7 @@
             dpadEl.addEventListener('pointerdown', (ev) => {
               ev.preventDefault();
               this.core.audio.unlock();
+              if (navigator.vibrate) try { navigator.vibrate(15); } catch (e) {}
               try { dpadEl.setPointerCapture(ev.pointerId); } catch (e) {}
               activeDpadPointers.set(ev.pointerId, resolveDpadDir(ev.clientX));
               syncDpadState();
@@ -6585,6 +7417,7 @@
             btn.addEventListener('pointerdown', (ev) => {
               ev.preventDefault();
               this.core.audio.unlock();
+              if (navigator.vibrate) try { navigator.vibrate(15); } catch (e) {}
               try { btn.setPointerCapture(ev.pointerId); } catch (e) {}
               activeIds.add(ev.pointerId);
               refresh();
@@ -6639,15 +7472,42 @@
           });
         }
 
+        renderSkinGrid() {
+          if (!this.dom.skinGrid) return;
+          const activeId = this.core.settings.skinId || 'spirit';
+          this.dom.skinGrid.innerHTML = '';
+          PLAYER_SKINS.forEach((sk) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `skin-card${sk.id === activeId ? ' selected' : ''}`;
+            btn.innerHTML = `
+              <div class="skin-swatch" style="background:linear-gradient(135deg,${sk.cloak1},${sk.cloak2});border-color:${sk.scarf};">${sk.emoji}</div>
+              <div class="skin-name">${sk.name}</div>
+              <div class="skin-tag">${sk.id === activeId ? '✅ ĐANG DÙNG' : sk.tag}</div>
+            `;
+            btn.addEventListener('click', () => {
+              this.core.audio.unlock();
+              this.core.settings.skinId = sk.id;
+              this.core.player.skinId = sk.id;
+              this.core.saveProgress();
+              this.renderSkinGrid();
+            });
+            this.dom.skinGrid.appendChild(btn);
+          });
+        }
+
         openModal(type) {
           if (type === 'worldmap') this.renderWorldMap();
+          if (type === 'skins') this.renderSkinGrid();
           if (this.dom.overlayWorldMap) this.dom.overlayWorldMap.classList.toggle('hidden', type !== 'worldmap');
           if (this.dom.overlaySettings) this.dom.overlaySettings.classList.toggle('hidden', type !== 'settings');
+          if (this.dom.overlaySkins) this.dom.overlaySkins.classList.toggle('hidden', type !== 'skins');
         }
 
         closeModals() {
           if (this.dom.overlayWorldMap) this.dom.overlayWorldMap.classList.add('hidden');
           if (this.dom.overlaySettings) this.dom.overlaySettings.classList.add('hidden');
+          if (this.dom.overlaySkins) this.dom.overlaySkins.classList.add('hidden');
         }
 
         showMenu() {
@@ -6748,11 +7608,13 @@
           this.ctx = this.canvas.getContext('2d');
           this.viewW = window.innerWidth;
           this.viewH = window.innerHeight;
-          this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+          this.dpr = this.graphics ? this.graphics.config.dpr : 1.0;
 
           // Initialize all AAA Engine Subsystems from Parts 1, 2, 3 & 4
+          this.graphics = new GraphicsManager();
           this.audio = new ProceduralAudio();
           this.postFX = new PostProcessing();
+          this.biomeRenderer = new BiomeRenderer();
           this.particles = new ParticleSystem(320);
           this.physics = new PhysicsEngine();
           this.director = new TrollDirector();
@@ -6785,7 +7647,7 @@
             });
           }
 
-          this.settings = { volume: 0.75, shake: 1.0, postFX: true, showTouch: true, touchPreferenceExplicit: false };
+          this.settings = { volume: 0.75, shake: 1.0, postFX: true, showTouch: true, touchPreferenceExplicit: false, skinId: 'spirit' };
           this.clearedLevels = [];
           this.totalPlayTime = 0;
           this.levelDeaths = 0;
@@ -6808,6 +7670,8 @@
 
           this.loadProgress();
           this.ui = new UIManager(this);
+          this.graphics.bindUI(this);
+          this.graphics.setPreset(this.graphics.currentId, this);
 
           this._applySettings();
           this._bindKeyboard();
@@ -6818,6 +7682,8 @@
           this.level = BiomeGenerator.generate(0);
           this.director.loadLevelTraps(this.level.traps);
           this.postFX.setWeather(this.level.weather, this.viewW, this.viewH);
+          this.biomeRenderer.initForLevel(this.level, this.viewW, this.viewH);
+          this.player.skinId = this.settings.skinId || 'spirit';
           this.ui.showMenu();
 
           this._accumulator = 0;
@@ -6879,7 +7745,7 @@
         _handleResize() {
           this.viewW = window.innerWidth;
           this.viewH = window.innerHeight;
-          this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+          this.dpr = this.graphics ? this.graphics.config.dpr : 1.0;
           this.canvas.width = Math.floor(this.viewW * this.dpr);
           this.canvas.height = Math.floor(this.viewH * this.dpr);
           this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
@@ -6919,6 +7785,8 @@
           this.director.loadLevelTraps(this.level.traps);
           this.particles.clearAll();
           this.postFX.setWeather(this.level.weather, this.viewW, this.viewH);
+          this.biomeRenderer.initForLevel(this.level, this.viewW, this.viewH);
+          this.player.skinId = this.settings.skinId || 'spirit';
 
           this.player.spawnX = this.level.spawn.x;
           this.player.spawnY = this.level.spawn.y;
@@ -6995,8 +7863,9 @@
           this.director.heatmap.recordDeath(this.player.x + this.player.w * 0.5, this.player.y + this.player.h * 0.5);
           this.saveProgress();
 
-          // Dramatic Slow-Motion + Glass Shatter + Tinnitus + Mocking Laugh / Sad Trombone!
-          this.postFX.triggerSlowMo(0.22, 0.78);
+          // 0.4s Hit-Stop Freeze + Slow-Motion + Damped Harmonic Shake + 60 Luminous Shards!
+          this.postFX.triggerHitStop(0.40);
+          this.postFX.triggerSlowMo(0.22, 0.85);
           this.postFX.addShake(0.95);
           this.postFX.triggerChromatic(15, 0.42);
           this.postFX.triggerFlash('#ff1e7a', 0.42);
@@ -7086,6 +7955,7 @@
 
           this.postFX.update(dt, this.viewW, this.viewH);
           this.narrator.update(dt);
+          if (this.postFX.hitStopTimer > 0) return;
 
           if (this.mode === 'menu') {
             this.cam.x = (this.cam.x + 36 * dt) % Math.max(1, this.level.width - this.viewW);
@@ -7200,6 +8070,7 @@
             }
           }
 
+          this.biomeRenderer.update(scaledDt, this.player);
           this._updateSmartCamera(dt);
           this.particles.update(scaledDt, this.level.solids);
         }
@@ -7222,33 +8093,11 @@
             -this.viewH * 0.5 - this.cam.y + this.postFX.shakeOffsetY
           );
 
-          // Render Solid Terrain
-          const th = this.level.theme;
-          for (let i = 0; i < this.level.solids.length; i++) {
-            const b = this.level.solids[i];
-            if (b.broken || (b.type === 'invis_block' && !b.revealed)) continue;
-            if (b.type === 'ice') {
-              ctx.fillStyle = '#5bd6ff';
-              ctx.fillRect(b.x, b.y, b.w, b.h);
-              ctx.fillStyle = '#e8fbff';
-              ctx.fillRect(b.x, b.y, b.w, 5);
-            } else if (b.type === 'crumble') {
-              ctx.fillStyle = '#4a2538';
-              ctx.fillRect(b.x, b.y, b.w, b.h);
-              ctx.strokeStyle = '#ffaa00';
-              ctx.strokeRect(b.x, b.y, b.w, b.h);
-            } else if (b.type === 'invis_block') {
-              ctx.fillStyle = '#ffaa00';
-              ctx.fillRect(b.x, b.y, b.w, b.h);
-            } else {
-              ctx.fillStyle = th.blockFill || '#1a1530';
-              ctx.fillRect(b.x, b.y, b.w, b.h);
-              ctx.fillStyle = th.blockTop || '#00f5ff';
-              ctx.fillRect(b.x, b.y, b.w, 5);
-              ctx.strokeStyle = th.blockStroke || '#ff1e7a';
-              ctx.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1);
-            }
-          }
+          // Layer 5: Detailed Procedural Platforms (Grass/Snow/Circuits/Stalactites)
+          this.biomeRenderer.renderPlatforms(ctx, this.level, this.cam.x, this.viewW);
+
+          // Interactive Swinging Lanterns, Scattering Spores & Reflective Horizon Water
+          this.biomeRenderer.renderInteractiveEcology(ctx, this.level, this.player, this.cam.x, this.viewW);
 
           // Render Persistent Terrain Blood/Paint Splatters
           this.particles.renderSplatters(ctx);
@@ -7276,7 +8125,7 @@
 
           // Render Player with Verlet Scarf & Danger Eye-Tracking
           const nearest = this.director.findNearestDanger(this.player);
-          this.player.render(ctx, this.levelDeaths, nearest);
+          this.player.render(ctx, this.levelDeaths, nearest, this.level.theme.rimColor);
 
           // Render Particles & Shockwaves
           this.particles.renderParticles(ctx);
@@ -7290,6 +8139,9 @@
             this.director.renderDarknessMask(ctx, sx, sy, this.viewW, this.viewH);
           }
 
+          // Layer 7: Foreground Parallax Depth-of-Field Bokeh & Silhouette Branches
+          if (this.postFX.enabled) this.biomeRenderer.renderForegroundLayer7(ctx, this.cam.x, this.viewW, this.viewH, this.level.theme);
+
           // 4. Screen-Space Weather, Chromatic Aberration & Slow-Mo Vignette
           const deaths = this.security.vault.get('deaths') || 0;
           this.postFX.renderScreenPostFX(ctx, this.viewW, this.viewH, MathEx.clamp(deaths / 40, 0, 1));
@@ -7300,6 +8152,7 @@
           const loop = (now) => {
             const rawDt = Math.min(0.05, Math.max(0, (now - this._lastTime) / 1000));
             this._lastTime = now;
+            this.graphics.monitorFPS(rawDt, this.mode === 'playing');
             this._accumulator += rawDt;
 
             while (this._accumulator >= FIXED_TIMESTEP) {
